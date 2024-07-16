@@ -175,8 +175,7 @@ for (let row = 0; row < 10; row++) {
       }
     }
 
-    function handleDblClickedSquare(e) {
-      e.preventDefault();
+    function handleDblClickedSquare() {
       if (boat?.length > 0) {
         let squares = document.getElementsByClassName("gameSquare");
         for (box of squares) {

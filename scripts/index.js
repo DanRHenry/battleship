@@ -3,12 +3,33 @@ const nameSubmitBtn = document.getElementById("nameSubmitBtn");
 const nameInputSection = document.getElementById("nameInputSection");
 
 //Temporary for testing
-let boat = "0000"; // change this to whichever boat has been clicked (for placement) -- use an object with each boat name as keys and length as values
+const boatObject = {
+  Carrier: "xxxxx",
+  Battleship: "xxxx",
+  Cruiser: "xxx",
+  Submarine: "xxx",
+  Destroyer: "xx"
+}
+
+let boat = "xxxx";
+
+ for (element of Object.keys(boatObject)) {
+  let localboat = document.createElement("div");
+  console.log(element)
+  localboat.textContent = element;
+  console.log(boatObject[element])
+  localboat.id = boatObject[element]
+  document.getElementById(boatObject[element]).addEventListener("click", ()=> {
+    boat = boatObject[element];
+    console.log(boatObject[element])
+  })
+  document.getElementById("boatList").appendChild(localboat);
+};
+
+// let boat = "0000"; // change this to whichever boat has been clicked (for placement) -- use an object with each boat name as keys and length as values
 let horizontal = true;
 let vertical = false;
 
-horizontal = false;
-vertical = true;
 //End Temporary for testing
 
 const nameInputSectionHTML = `<h2>Enter your name</h2>
@@ -19,8 +40,10 @@ const nameInputSectionHTML = `<h2>Enter your name</h2>
       </form>`;
 
 nameInputSection.innerHTML = nameInputSectionHTML;
-function handleNameSubmitBtnClicked() {
+function handleNameSubmitBtnClicked(e) {
+  // e.preventDefault()
   nameInputSection.innerHTML = "";
+  // alert("done")
 }
 
 nameSubmitBtn?.addEventListener("click", handleNameSubmitBtnClicked);
@@ -49,12 +72,13 @@ for (let row = 0; row < 10; row++) {
     square.textContent = ` ${column}-${row} `;
 
     function handleClickedSquare() {
-      if (boat?.length > 0) {
+      // console.log("here")
+      if (boat.length > 0) {
         let squares = document.getElementsByClassName("gameSquare");
         for (box of squares) {
-            if (box.style.color !== "blue") {
-            box.style.backgroundColor = "black"
-            }
+          if (box.style.color !== "blue") {
+            box.style.backgroundColor = "black";
+          }
         }
 
         // use this section for initial placement and switching between horizontal and vertical alignment, but have a separate submit button for confirmation
@@ -67,55 +91,79 @@ for (let row = 0; row < 10; row++) {
 
             let initialCol = square.id[square.id.length - 1];
 
-            let temp = `grid-item-${(initialRow)}_${(+initialCol)+i}`;
+            let temp = `grid-item-${initialRow}_${+initialCol + i}`;
 
             let endPosition = +initialCol + boat.length;
-              if (endPosition < 11) {
-                if (document.getElementById(temp).style.color !== "blue") {
-                    document.getElementById(temp).style.backgroundColor = "red";
-                }
-              } else {
-                // console.log("won't fit");
-                if (document.getElementById(temp)) {
-                    document.getElementById(temp).style.backgroundColor = 'gray'
-                }
+            if (endPosition < 11) {
+              if (document.getElementById(temp).style.color !== "blue") {
+                document.getElementById(temp).style.backgroundColor = "red";
+              }
+            } else {
+              // console.log("won't fit");
+              if (document.getElementById(temp)) {
+                document.getElementById(temp).style.backgroundColor = "gray";
               }
             }
+          }
 
           if (horizontal) {
             let initialRow = +square.id[square.id.length - 3];
             let initialCol = +square.id[square.id.length - 1];
 
-            let temp = `grid-item-${(initialRow) + i}_${initialCol}`;
+            let temp = `grid-item-${initialRow + i}_${initialCol}`;
 
             let endPosition = +initialRow + boat.length;
 
             if (endPosition < 11) {
-                if (document.getElementById(temp).style.color !== "blue"){
-                    document.getElementById(temp).style.backgroundColor = "green";
-                }
+              if (document.getElementById(temp).style.color !== "blue") {
+                document.getElementById(temp).style.backgroundColor = "green";
+              }
             } else {
-            //   console.log("won't fit");
+              //   console.log("won't fit");
               if (document.getElementById(temp)) {
-                  document.getElementById(temp).style.backgroundColor = 'gray'
+                document.getElementById(temp).style.backgroundColor = "gray";
               }
             }
           }
         }
-      } 
-      
-      else {
+      } else {
         square.removeEventListener("click", handleClickedSquare);
       }
     }
 
-    function handleDblClickedSquare() {
+    function checkPositionsValidity(initialRow, initialCol) {
+      let positionsToCheck = "";
+      for (let i = 0; i < boat.length; i++) {
+        if (vertical) {
+          let temp = `grid-item-${initialRow}_${+initialCol + i}`;
+          if (document.getElementById(temp).style.backgroundColor === "white") {
+            return;
+          } else {
+            positionsToCheck += "x";
+          }
+        }
+        if (horizontal) {
+          let temp = `grid-item-${initialRow + i}_${initialCol}`;
+          if (document.getElementById(temp).style.backgroundColor === "white") {
+            return;
+          } else {
+            positionsToCheck += "x";
+          }
+        }
+        if (positionsToCheck.length != boat.length) {
+          return false;
+        }
+      }
+    }
+
+    function handleDblClickedSquare(e) {
+      e.preventDefault()
       if (boat?.length > 0) {
         let squares = document.getElementsByClassName("gameSquare");
         for (box of squares) {
-            if (box.style.color !== "blue") {
-            box.style.backgroundColor = "black"
-        }
+          if (box.style.color !== "blue") {
+            box.style.backgroundColor = "black";
+          }
         }
 
         for (let i = 0; i < boat.length; i++) {
@@ -124,60 +172,68 @@ for (let row = 0; row < 10; row++) {
 
             let initialCol = square.id[square.id.length - 1];
 
-            let temp = `grid-item-${(initialRow)}_${(+initialCol)+i}`;
-            if (document.getElementById(temp).style.backgroundColor === "white") {
-                return;
+            // if (checkPositionsValidity(initialRow, initialCol) === false); {
+            //   return;
+            // }
+
+            let temp = `grid-item-${initialRow}_${+initialCol + i}`;
+            if (
+              document.getElementById(temp).style.backgroundColor === "white"
+            ) {
+              return;
             }
             let endPosition = +initialCol + boat.length;
-              if (endPosition < 11) {
-                document.getElementById(temp).style.color = "blue";
-                document.getElementById(temp).style.backgroundColor = "white"
-
-              } else {
-                // console.log("won't fit");
-                if (document.getElementById(temp)) {
-                    document.getElementById(temp).style.backgroundColor = 'gray'
-                }
+            if (endPosition < 11) {
+              document.getElementById(temp).style.color = "blue";
+              document.getElementById(temp).style.backgroundColor = "white";
+            } else {
+              // console.log("won't fit");
+              if (document.getElementById(temp)) {
+                document.getElementById(temp).style.backgroundColor = "gray";
               }
             }
+          }
 
           if (horizontal) {
             let initialRow = +square.id[square.id.length - 3];
             let initialCol = +square.id[square.id.length - 1];
 
-            let temp = `grid-item-${(initialRow) + i}_${initialCol}`;
-            if (document.getElementById(temp).style.backgroundColor === "white") {
-                return;
+            // if (checkPositionsValidity(initialRow, initialCol) === false); {
+              // return;
+            // }
+            let temp = `grid-item-${initialRow + i}_${initialCol}`;
+            if (
+              document.getElementById(temp).style.backgroundColor === "white"
+            ) {
+              return;
             }
             let endPosition = +initialRow + boat.length;
 
             if (endPosition < 11) {
               document.getElementById(temp).style.color = "blue";
-              document.getElementById(temp).style.backgroundColor = "white"
+              document.getElementById(temp).style.backgroundColor = "white";
             } else {
-            //   console.log("won't fit");
+              //   console.log("won't fit");
               if (document.getElementById(temp)) {
-                  document.getElementById(temp).style.backgroundColor = 'gray'
+                document.getElementById(temp).style.backgroundColor = "gray";
               }
             }
           }
         }
-      } 
-      
-      else {
+      } else {
         square.removeEventListener("click", handleClickedSquare);
       }
     }
 
     square.addEventListener("mouseover", handleClickedSquare);
 
-    square.addEventListener('click', () => {
-        vertical = !vertical;
-        horizontal = !horizontal;
-        handleClickedSquare()
-    })
+    square.addEventListener("click", () => {
+      vertical = !vertical;
+      horizontal = !horizontal;
+      handleClickedSquare();
+    });
 
-    square.addEventListener('dblclick',handleDblClickedSquare)
+    square.addEventListener("contextmenu", handleDblClickedSquare, false);
     grid.append(square);
   }
 }

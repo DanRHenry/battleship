@@ -8,23 +8,42 @@ const boatObject = {
   Battleship: "xxxx",
   Cruiser: "xxx",
   Submarine: "xxx",
-  Destroyer: "xx"
+  Destroyer: "xx",
+};
+
+let boat;
+// let boat = "xxxx";
+
+for (element of Object.keys(boatObject)) {
+  let localboat = document.createElement("div");
+  localboat.textContent = element;
+  localboat.id = element;
+  localboat.className = "boat";
+  localboat.style.color = "black";
+  localboat.style.userSelect = "none";
+  document.getElementById("boatList").appendChild(localboat);
 }
 
-let boat = "xxxx";
+let boats = document.getElementsByClassName("boat");
 
- for (element of Object.keys(boatObject)) {
-  let localboat = document.createElement("div");
-  console.log(element)
-  localboat.textContent = element;
-  console.log(boatObject[element])
-  localboat.id = boatObject[element]
-  document.getElementById(boatObject[element]).addEventListener("click", ()=> {
-    boat = boatObject[element];
-    console.log(boatObject[element])
-  })
-  document.getElementById("boatList").appendChild(localboat);
-};
+for (let i = 0; i < boats.length; i++) {
+  function handleBoatsListClicks() {
+    boat = boatObject[boats[i].id];
+    if (boats[i].style.color == "black") {
+      boats[i].style.color = "white";
+    } else {
+      boats[i].style.color = "black";
+    }
+
+    for (item of boats) {
+      if (item.id !== boats[i].id) {
+        item.style.color = "black";
+      }
+    }
+  }
+
+  boats[i].addEventListener("click", handleBoatsListClicks);
+}
 
 // let boat = "0000"; // change this to whichever boat has been clicked (for placement) -- use an object with each boat name as keys and length as values
 let horizontal = true;
@@ -73,7 +92,7 @@ for (let row = 0; row < 10; row++) {
 
     function handleClickedSquare() {
       // console.log("here")
-      if (boat.length > 0) {
+      if (boat?.length > 0) {
         let squares = document.getElementsByClassName("gameSquare");
         for (box of squares) {
           if (box.style.color !== "blue") {
@@ -157,7 +176,7 @@ for (let row = 0; row < 10; row++) {
     }
 
     function handleDblClickedSquare(e) {
-      e.preventDefault()
+      e.preventDefault();
       if (boat?.length > 0) {
         let squares = document.getElementsByClassName("gameSquare");
         for (box of squares) {
@@ -172,10 +191,6 @@ for (let row = 0; row < 10; row++) {
 
             let initialCol = square.id[square.id.length - 1];
 
-            // if (checkPositionsValidity(initialRow, initialCol) === false); {
-            //   return;
-            // }
-
             let temp = `grid-item-${initialRow}_${+initialCol + i}`;
             if (
               document.getElementById(temp).style.backgroundColor === "white"
@@ -187,7 +202,6 @@ for (let row = 0; row < 10; row++) {
               document.getElementById(temp).style.color = "blue";
               document.getElementById(temp).style.backgroundColor = "white";
             } else {
-              // console.log("won't fit");
               if (document.getElementById(temp)) {
                 document.getElementById(temp).style.backgroundColor = "gray";
               }
@@ -198,9 +212,6 @@ for (let row = 0; row < 10; row++) {
             let initialRow = +square.id[square.id.length - 3];
             let initialCol = +square.id[square.id.length - 1];
 
-            // if (checkPositionsValidity(initialRow, initialCol) === false); {
-              // return;
-            // }
             let temp = `grid-item-${initialRow + i}_${initialCol}`;
             if (
               document.getElementById(temp).style.backgroundColor === "white"
@@ -213,7 +224,6 @@ for (let row = 0; row < 10; row++) {
               document.getElementById(temp).style.color = "blue";
               document.getElementById(temp).style.backgroundColor = "white";
             } else {
-              //   console.log("won't fit");
               if (document.getElementById(temp)) {
                 document.getElementById(temp).style.backgroundColor = "gray";
               }
@@ -237,3 +247,8 @@ for (let row = 0; row < 10; row++) {
     grid.append(square);
   }
 }
+
+//todo -- once placed, ship colors should turn from white to gray
+//todo -- if colors are gray and the game hasn't begun yet, maybe allow for ships to be recalled. this could be accomplished by searching the grid for the matching id
+//todo -- fix overlaps when placing ships
+//todo -- work on websocket integration, player turns, etc.

@@ -1,3 +1,33 @@
+let enemyBoard = ""
+
+const ws = new WebSocket("ws://127.0.0.1:3400");
+// ws.addEventListener("open", () => {
+//   console.log("socket open");
+// });
+
+ws.addEventListener("close", () => {
+    const ws = new WebSocket("ws://127.0.0.1:3400");
+    ws.addEventListener("open", () => {
+        console.log("socket reopened");
+      });
+})
+
+ws.addEventListener("message", (message) => {
+  if (message.data === "Welcome new client") {
+    return;
+  }
+
+  if (JSON.parse(message.data).enemyCoordinates) {
+    const coordinateData = JSON.parse(message.data).enemyCoordinates;
+
+    const col = coordinateData[coordinateData.length-3]
+    const row = coordinateData[coordinateData.length-1]
+
+    enemyBoard += col
+    enemyBoard += row
+}
+});
+
 const nameSubmitBtn = document.getElementById("nameSubmitBtn");
 
 const nameInputSection = document.getElementById("nameInputSection");
@@ -183,8 +213,20 @@ for (let row = 0; row < 10; row++) {
           if (box.style.color !== "blue") {
             box.style.backgroundColor = "black";
           }
+          if (box.style.color === "blue") {
+            console.log(box.id[box.id.length - 3], box.id[box.id.length - 1]);
+          }
         }
 
+    function sendShipData (coordinates) {
+        const id = document.getElementById(coordinates).id;
+        const ws = new WebSocket("ws://127.0.0.1:3400");
+        ws.addEventListener("open", () => {
+          ws.send(
+            JSON.stringify({ enemyCoordinates: id })
+          );
+        });
+    }
         for (let i = 0; i < boat.length; i++) {
           if (vertical) {
             let initialRow = square.id[square.id.length - 3];
@@ -200,6 +242,8 @@ for (let row = 0; row < 10; row++) {
             let endPosition = +initialCol + boat.length;
             if (endPosition < 11) {
               document.getElementById(temp).style.color = "blue";
+              sendShipData(temp)
+
               document.getElementById(temp).style.backgroundColor = "white";
             } else {
               if (document.getElementById(temp)) {
@@ -222,6 +266,7 @@ for (let row = 0; row < 10; row++) {
 
             if (endPosition < 11) {
               document.getElementById(temp).style.color = "blue";
+              sendShipData(temp)
               document.getElementById(temp).style.backgroundColor = "white";
             } else {
               if (document.getElementById(temp)) {
@@ -252,3 +297,4 @@ for (let row = 0; row < 10; row++) {
 //todo -- if colors are gray and the game hasn't begun yet, maybe allow for ships to be recalled. this could be accomplished by searching the grid for the matching id
 //todo -- fix overlaps when placing ships
 //todo -- work on websocket integration, player turns, etc.
+//todo -- use the enemyBoard string to determine hits

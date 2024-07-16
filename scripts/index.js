@@ -1,5 +1,7 @@
-let enemyBoard = ""
+const nameInputSection = document.getElementById("nameInputSection");
 
+let enemyBoard = ""
+let playerName = ""
 const ws = new WebSocket("ws://127.0.0.1:3400");
 // ws.addEventListener("open", () => {
 //   console.log("socket open");
@@ -27,10 +29,6 @@ ws.addEventListener("message", (message) => {
     enemyBoard += row
 }
 });
-
-const nameSubmitBtn = document.getElementById("nameSubmitBtn");
-
-const nameInputSection = document.getElementById("nameInputSection");
 
 //Temporary for testing
 const boatObject = {
@@ -89,13 +87,18 @@ const nameInputSectionHTML = `<h2>Enter your name</h2>
       </form>`;
 
 nameInputSection.innerHTML = nameInputSectionHTML;
+const nameSubmitBtn = document.getElementById("nameSubmitBtn");
+
+
 function handleNameSubmitBtnClicked(e) {
-  // e.preventDefault()
-  nameInputSection.innerHTML = "";
-  // alert("done")
+  e.preventDefault()
+  playerName = (document.getElementById("name").value)
+  nameInputSection.innerHTML = `<h2>Welcome, ${playerName}!</h2>
+  <h3>Place your ships!</h3>`;
 }
 
 nameSubmitBtn?.addEventListener("click", handleNameSubmitBtnClicked);
+
 const gameBoard = document.getElementById("gameBoard");
 
 const grid = document.createElement("div");
@@ -121,7 +124,6 @@ for (let row = 0; row < 10; row++) {
     square.textContent = ` ${column}-${row} `;
 
     function handleClickedSquare() {
-      // console.log("here")
       if (boat?.length > 0) {
         let squares = document.getElementsByClassName("gameSquare");
         for (box of squares) {

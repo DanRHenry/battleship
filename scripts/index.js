@@ -32,11 +32,11 @@ ws.addEventListener("message", (message) => {
 
 //Temporary for testing
 const boatObject = {
-  Carrier: "xxxxx",
-  Battleship: "xxxx",
-  Cruiser: "xxx",
-  Submarine: "xxx",
-  Destroyer: "xx",
+  Carrier: "ccccc",
+  Battleship: "bbbb",
+  Cruiser: "rrr",
+  Submarine: "sss",
+  Destroyer: "dd",
 };
 
 let boat;
@@ -73,11 +73,8 @@ for (let i = 0; i < boats.length; i++) {
   boats[i].addEventListener("click", handleBoatsListClicks);
 }
 
-// let boat = "0000"; // change this to whichever boat has been clicked (for placement) -- use an object with each boat name as keys and length as values
 let horizontal = true;
 let vertical = false;
-
-//End Temporary for testing
 
 const nameInputSectionHTML = `<h2>Enter your name</h2>
     <form action="">
@@ -88,7 +85,6 @@ const nameInputSectionHTML = `<h2>Enter your name</h2>
 
 nameInputSection.innerHTML = nameInputSectionHTML;
 const nameSubmitBtn = document.getElementById("nameSubmitBtn");
-
 
 function handleNameSubmitBtnClicked(e) {
   e.preventDefault()
@@ -247,6 +243,11 @@ for (let row = 0; row < 10; row++) {
               sendShipData(temp)
 
               document.getElementById(temp).style.backgroundColor = "white";
+              document.getElementById(temp).className = boat[0]
+            //   console.log(temp)
+            //   console.log("boats:",boats)
+            //   console.log('temp',temp)
+            console.log(document.getElementById(temp))
             } else {
               if (document.getElementById(temp)) {
                 document.getElementById(temp).style.backgroundColor = "gray";
@@ -270,6 +271,10 @@ for (let row = 0; row < 10; row++) {
               document.getElementById(temp).style.color = "blue";
               sendShipData(temp)
               document.getElementById(temp).style.backgroundColor = "white";
+              document.getElementById(temp).className = boat[0]
+              console.log(document.getElementById(temp))
+            //   console.log(temp)
+            //   console.log("boats:",boats)
             } else {
               if (document.getElementById(temp)) {
                 document.getElementById(temp).style.backgroundColor = "gray";

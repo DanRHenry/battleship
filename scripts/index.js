@@ -57,10 +57,11 @@ let boats = document.getElementsByClassName("boat");
 for (let i = 0; i < boats.length; i++) {
   function handleBoatsListClicks() {
     boat = boatObject[boats[i].id];
-    if (boats[i].style.color == "black") {
-      boats[i].style.color = "white";
+    const boatName = (boats[i])
+    if (boatName.style.color !== "white" || boatName.style.color !== "yellow") {
+      boatName.style.color = "white";
     } else {
-      boats[i].style.color = "black";
+      boatName.style.color = "black";
     }
 
     for (item of boats) {
@@ -69,8 +70,25 @@ for (let i = 0; i < boats.length; i++) {
       }
     }
   }
+  function handleBoatsListMouseover() {
+    const boatName = (boats[i])
+
+    if (boatName.style.color === "black") {
+      boatName.style.color = "yellow"
+    } else if (boatName.style.color === "yellow") {
+      boatName.style.color = "black"
+    }
+    for (item of boats) {
+      if (boatName.style.color === "white") {
+        return;
+      } else if (item.id !== boatName.id && item.style.color !== "white") {
+        item.style.color = "black";
+      }
+    }
+  }
 
   boats[i].addEventListener("click", handleBoatsListClicks);
+  boats[i].addEventListener("mouseover", handleBoatsListMouseover);
 }
 
 // let boat = "0000"; // change this to whichever boat has been clicked (for placement) -- use an object with each boat name as keys and length as values

@@ -150,27 +150,31 @@ for (let row = 0; row < 10; row++) {
           }
         }
 
-        // use this section for initial placement and switching between horizontal and vertical alignment, but have a separate submit button for confirmation
-
-        //use a separate event listener to detect hovering to show boat temp positions
-
+        // const coloredSquares = {}
         for (let i = 0; i < boat.length; i++) {
           if (vertical) {
             let initialRow = square.id[square.id.length - 3];
-
             let initialCol = square.id[square.id.length - 1];
 
-            let temp = `grid-item-${initialRow}_${+initialCol + i}`;
+            let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
             let endPosition = +initialCol + boat.length;
             if (endPosition < 11) {
-              if (document.getElementById(temp).style.color !== "blue") {
-                document.getElementById(temp).style.backgroundColor = "red";
+              if (document.getElementById(position).style.color === "blue") {
+                coloredSquares[(document.getElementById(position).id)] = document.getElementById(position).style.backgroundColor
+                console.log(coloredSquares)
+                console.log(Object.keys(coloredSquares))
+                if (Object.keys(coloredSquares).includes(!"black")) {
+                  console.log(coloredSquares)
+                  // return;
+                } else {
+                document.getElementById(position).style.backgroundColor = "red";
+              }
               }
             } else {
               // console.log("won't fit");
-              if (document.getElementById(temp)) {
-                document.getElementById(temp).style.backgroundColor = "gray";
+              if (document.getElementById(position)) {
+                document.getElementById(position).style.backgroundColor = "gray";
               }
             }
           }
@@ -179,18 +183,18 @@ for (let row = 0; row < 10; row++) {
             let initialRow = +square.id[square.id.length - 3];
             let initialCol = +square.id[square.id.length - 1];
 
-            let temp = `grid-item-${initialRow + i}_${initialCol}`;
+            let position = `grid-item-${initialRow + i}_${initialCol}`;
 
             let endPosition = +initialRow + boat.length;
 
             if (endPosition < 11) {
-              if (document.getElementById(temp).style.color !== "blue") {
-                document.getElementById(temp).style.backgroundColor = "green";
+              if (document.getElementById(position).style.color !== "blue") {
+                document.getElementById(position).style.backgroundColor = "green";
               }
             } else {
               //   console.log("won't fit");
-              if (document.getElementById(temp)) {
-                document.getElementById(temp).style.backgroundColor = "gray";
+              if (document.getElementById(position)) {
+                document.getElementById(position).style.backgroundColor = "gray";
               }
             }
           }
@@ -202,18 +206,20 @@ for (let row = 0; row < 10; row++) {
 
     function checkPositionsValidity(initialRow, initialCol) {
       let positionsToCheck = "";
+      const coloredSquares = {}
+
       for (let i = 0; i < boat.length; i++) {
         if (vertical) {
-          let temp = `grid-item-${initialRow}_${+initialCol + i}`;
-          if (document.getElementById(temp).style.backgroundColor === "white") {
+          let position = `grid-item-${initialRow}_${+initialCol + i}`;
+          if (document.getElementById(position).style.backgroundColor === "white") {
             return;
           } else {
             positionsToCheck += "x";
           }
         }
         if (horizontal) {
-          let temp = `grid-item-${initialRow + i}_${initialCol}`;
-          if (document.getElementById(temp).style.backgroundColor === "white") {
+          let position = `grid-item-${initialRow + i}_${initialCol}`;
+          if (document.getElementById(position).style.backgroundColor === "white") {
             return;
           } else {
             positionsToCheck += "x";
@@ -253,21 +259,21 @@ for (let row = 0; row < 10; row++) {
 
             let initialCol = square.id[square.id.length - 1];
 
-            let temp = `grid-item-${initialRow}_${+initialCol + i}`;
+            let position = `grid-item-${initialRow}_${+initialCol + i}`;
             if (
-              document.getElementById(temp).style.backgroundColor === "white"
+              document.getElementById(position).style.backgroundColor === "white"
             ) {
               return;
             }
             let endPosition = +initialCol + boat.length;
             if (endPosition < 11) {
-              document.getElementById(temp).style.color = "blue";
-              sendShipData(temp)
+              document.getElementById(position).style.color = "blue";
+              sendShipData(position)
 
-              document.getElementById(temp).style.backgroundColor = "white";
+              document.getElementById(position).style.backgroundColor = "white";
             } else {
-              if (document.getElementById(temp)) {
-                document.getElementById(temp).style.backgroundColor = "gray";
+              if (document.getElementById(position)) {
+                document.getElementById(position).style.backgroundColor = "gray";
               }
             }
           }
@@ -276,21 +282,21 @@ for (let row = 0; row < 10; row++) {
             let initialRow = +square.id[square.id.length - 3];
             let initialCol = +square.id[square.id.length - 1];
 
-            let temp = `grid-item-${initialRow + i}_${initialCol}`;
+            let position = `grid-item-${initialRow + i}_${initialCol}`;
             if (
-              document.getElementById(temp).style.backgroundColor === "white"
+              document.getElementById(position).style.backgroundColor === "white"
             ) {
               return;
             }
             let endPosition = +initialRow + boat.length;
 
             if (endPosition < 11) {
-              document.getElementById(temp).style.color = "blue";
-              sendShipData(temp)
-              document.getElementById(temp).style.backgroundColor = "white";
+              document.getElementById(position).style.color = "blue";
+              sendShipData(position)
+              document.getElementById(position).style.backgroundColor = "white";
             } else {
-              if (document.getElementById(temp)) {
-                document.getElementById(temp).style.backgroundColor = "gray";
+              if (document.getElementById(position)) {
+                document.getElementById(position).style.backgroundColor = "gray";
               }
             }
           }

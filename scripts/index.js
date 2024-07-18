@@ -161,10 +161,9 @@ for (let row = 0; row < 10; row++) {
               const location = document.getElementById(position);
               if (location.style.color !== "blue") {
                 location.style.backgroundColor = "red";
-              } 
-              else if (location.style.backgroundColor === "white") {
+              } else if (location.style.backgroundColor === "white") {
                 return;
-              // } else {
+                // } else {
                 // location.style.backgroundColor = "gray";
               }
             }
@@ -184,11 +183,10 @@ for (let row = 0; row < 10; row++) {
               } else if (
                 location.style.backgroundColor &&
                 location.style.backgroundColor === "white"
-              ) 
-              {
+              ) {
                 return;
-              } 
-              // else 
+              }
+              // else
               // {
               //   location.style.backgroundColor = "gray";
               // }
@@ -209,7 +207,7 @@ for (let row = 0; row < 10; row++) {
             if (
               document.getElementById(position)?.style.backgroundColor !==
               "white"
-            )  {
+            ) {
               mayPlace += "x";
               if (mayPlace.length === boat.length) {
                 return true;
@@ -217,7 +215,7 @@ for (let row = 0; row < 10; row++) {
             }
           }
           if (horizontal) {
-            let position = `grid-item-${initialRow + i}_${initialCol}`;
+            let position = `grid-item-${+initialRow + i}_${initialCol}`;
             if (
               document.getElementById(position)?.style.backgroundColor !==
               "white"
@@ -238,18 +236,20 @@ for (let row = 0; row < 10; row++) {
 
     function handleDblClickedSquare(e) {
       e.preventDefault();
-            let initialRow = square.id[square.id.length - 3];
-            let initialCol = square.id[square.id.length - 1];
+      let initialRow = square.id[square.id.length - 3];
+      let initialCol = square.id[square.id.length - 1];
 
       if (boat?.length > 0) {
         let squares = document.getElementsByClassName("gameSquare");
+
         for (box of squares) {
           if (box.style.color !== "blue") {
-            box.style.backgroundColor = "black";
+            // box.style.backgroundColor = "black";
           }
-          if (box.style.color === "blue") {
-            console.log(box.id[box.id.length - 3], box.id[box.id.length - 1]);
-          }
+
+          // if (box.style.color === "blue") {
+          //   console.log(box.id[box.id.length - 3], box.id[box.id.length - 1]);
+          // }
         }
 
         function sendShipData(coordinates) {
@@ -260,49 +260,47 @@ for (let row = 0; row < 10; row++) {
           });
         }
 
-        for (let i = 0; i < boat.length; i++) {
-          if (vertical) {
-            let position = `grid-item-${initialRow}_${+initialCol + i}`;
-              if (checkPositionsValidity(initialRow, initialCol) === false) 
-                {
-                  return;
-                }
-                if (checkPositionsValidity(initialRow, initialCol) === true) {
-                  document.getElementById(position).style.backgroundColor ===
-                  "white"
-                }
-            let endPosition = +initialCol + boat.length;
-            if (endPosition <= 10) {
-                if (checkPositionsValidity(initialRow, initialCol) === true) {
-                  document.getElementById(position).style.backgroundColor = "white";
-                  document.getElementById(position).style.color = "blue";
-                  sendShipData(position);
-              }
-            } 
-          }
+        if (vertical) {
+          if (checkPositionsValidity(initialRow, initialCol) === true) {
+            for (let i = 0; i < boat.length; i++) {
+              let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
-          if (horizontal) {
-            let position = `grid-item-${+initialRow + i}_${initialCol}`;
-            if (
               document.getElementById(position).style.backgroundColor ===
-              "white"
-            ) {
-              return;
-            }
-            let endPosition = +initialRow + boat.length;
+                "white";
+              let endPosition = +initialCol + boat.length;
+              if (endPosition <= 10) {
+                document.getElementById(position).style.backgroundColor =
+                  "white";
 
-            if (endPosition <= 10) {
-              if (checkPositionsValidity(initialRow, initialCol) === true) {
                 document.getElementById(position).style.color = "blue";
                 sendShipData(position);
-                document.getElementById(position).style.backgroundColor = "white";
               }
-            } 
+            }
           }
         }
-      } else {
-        square.removeEventListener("click", handleClickedSquare);
+
+        if (horizontal) {
+          if (checkPositionsValidity(initialRow, initialCol) === true) {
+            for (let i = 0; i < boat.length; i++) {
+              let position = `grid-item-${+initialRow + i}_${initialCol}`;
+
+              document.getElementById(position).style.backgroundColor ===
+                "white";
+              let endPosition = +initialRow + boat.length;
+              if (endPosition <= 10) {
+                document.getElementById(position).style.backgroundColor =
+                  "white";
+
+                document.getElementById(position).style.color = "blue";
+                sendShipData(position);
+              }
+            }
+          }
+        }
       }
+      //  else {
+      //   square.removeEventListener("click", handleClickedSquare);
+      // }
     }
 
     square.addEventListener("mouseover", handleClickedSquare);

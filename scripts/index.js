@@ -2,7 +2,7 @@ const nameInputSection = document.getElementById("nameInputSection");
 
 let enemyBoard = "";
 let playerName = "";
-// let mayPlace = "";
+
 const ws = new WebSocket("ws://127.0.0.1:3400");
 // ws.addEventListener("open", () => {
 //   console.log("socket open");
@@ -156,16 +156,17 @@ for (let row = 0; row < 10; row++) {
             let endPosition = +initialCol + boat.length;
 
             if (endPosition <= 10) {
-              if (checkPositionsValidity(initialRow, initialCol) === false) {
-                return;
-              }
+              // if (checkPositionsValidity(initialRow, initialCol) === false) {
+              //   return;
+              // }
               const location = document.getElementById(position);
               if (location.style.color !== "blue") {
                 location.style.backgroundColor = "red";
-              } else if (location.style.backgroundColor === "white") {
+              } 
+              else if (location.style.backgroundColor === "white") {
                 return;
-              } else {
-                location.style.backgroundColor = "gray";
+              // } else {
+                // location.style.backgroundColor = "gray";
               }
             }
           }
@@ -175,21 +176,23 @@ for (let row = 0; row < 10; row++) {
             let endPosition = +initialRow + boat.length;
 
             if (endPosition <= 10) {
-              if (checkPositionsValidity(initialRow, initialCol) === false) {
-                return;
-              }
+              // if (checkPositionsValidity(initialRow, initialCol) === false) {
+              //   return;
+              // }
               const location = document.getElementById(position);
-              // console.log("location", location);
               if (location.style.color && location.style.color !== "blue") {
                 location.style.backgroundColor = "green";
               } else if (
                 location.style.backgroundColor &&
                 location.style.backgroundColor === "white"
-              ) {
+              ) 
+              {
                 return;
-              } else {
-                location.style.backgroundColor = "gray";
-              }
+              } 
+              // else 
+              // {
+              //   location.style.backgroundColor = "gray";
+              // }
             }
           }
         }
@@ -210,7 +213,6 @@ for (let row = 0; row < 10; row++) {
             )  {
               mayPlace += "x";
               if (mayPlace.length === boat.length) {
-                console.log("1")
                 return true;
               }
             }
@@ -223,17 +225,14 @@ for (let row = 0; row < 10; row++) {
             ) {
               mayPlace += "x";
               if (mayPlace.length === boat.length) {
-                console.log("2")
                 return true;
               }
             }
           }
         }
       } else if (mayPlace.length !== boat.length) {
-        console.log("3")
         return false;
       } else {
-        console.log("4")
         return;
       }
     }
@@ -265,7 +264,6 @@ for (let row = 0; row < 10; row++) {
         for (let i = 0; i < boat.length; i++) {
           if (vertical) {
             let position = `grid-item-${initialRow}_${+initialCol + i}`;
-            // if (
               if (checkPositionsValidity(initialRow, initialCol) === false) 
                 {
                   return;
@@ -276,9 +274,6 @@ for (let row = 0; row < 10; row++) {
                 }
             let endPosition = +initialCol + boat.length;
             if (endPosition <= 10) {
-              // if (checkPositionsValidity(initialRow, initialCol) === false) {
-              //   return;
-              // }
                 if (checkPositionsValidity(initialRow, initialCol) === true) {
                   document.getElementById(position).style.backgroundColor = "white";
                   document.getElementById(position).style.color = "blue";
@@ -288,8 +283,6 @@ for (let row = 0; row < 10; row++) {
           }
 
           if (horizontal) {
-            // let initialRow = +square.id[square.id.length - 3];
-            // let initialCol = +square.id[square.id.length - 1];
             let position = `grid-item-${+initialRow + i}_${initialCol}`;
             if (
               document.getElementById(position).style.backgroundColor ===
@@ -300,21 +293,12 @@ for (let row = 0; row < 10; row++) {
             let endPosition = +initialRow + boat.length;
 
             if (endPosition <= 10) {
-              // if (checkPositionsValidity(initialRow, initialCol) === false) {
-              //   return;
-              // }
               if (checkPositionsValidity(initialRow, initialCol) === true) {
                 document.getElementById(position).style.color = "blue";
                 sendShipData(position);
                 document.getElementById(position).style.backgroundColor = "white";
               }
             } 
-            // else {
-            //   if (document.getElementById(position)) {
-            //     document.getElementById(position).style.backgroundColor =
-            //       "gray";
-            //   }
-            // }
           }
         }
       } else {

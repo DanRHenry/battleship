@@ -1,18 +1,19 @@
 const nameInputSection = document.getElementById("nameInputSection");
 
-let enemyBoard = ""
-let playerName = ""
+let enemyBoard = "";
+let playerName = "";
+// let mayPlace = "";
 const ws = new WebSocket("ws://127.0.0.1:3400");
 // ws.addEventListener("open", () => {
 //   console.log("socket open");
 // });
 
 ws.addEventListener("close", () => {
-    const ws = new WebSocket("ws://127.0.0.1:3400");
-    ws.addEventListener("open", () => {
-        console.log("socket reopened");
-      });
-})
+  const ws = new WebSocket("ws://127.0.0.1:3400");
+  ws.addEventListener("open", () => {
+    console.log("socket reopened");
+  });
+});
 
 ws.addEventListener("message", (message) => {
   if (message.data === "Welcome new client") {
@@ -22,15 +23,14 @@ ws.addEventListener("message", (message) => {
   if (JSON.parse(message.data).enemyCoordinates) {
     const coordinateData = JSON.parse(message.data).enemyCoordinates;
 
-    const col = coordinateData[coordinateData.length-3]
-    const row = coordinateData[coordinateData.length-1]
+    const col = coordinateData[coordinateData.length - 3];
+    const row = coordinateData[coordinateData.length - 1];
 
-    enemyBoard += col
-    enemyBoard += row
-}
+    enemyBoard += col;
+    enemyBoard += row;
+  }
 });
 
-//Temporary for testing
 const boatObject = {
   Carrier: "xxxxx",
   Battleship: "xxxx",
@@ -57,7 +57,7 @@ let boats = document.getElementsByClassName("boat");
 for (let i = 0; i < boats.length; i++) {
   function handleBoatsListClicks() {
     boat = boatObject[boats[i].id];
-    const boatName = (boats[i])
+    const boatName = boats[i];
     if (boatName.style.color !== "white" || boatName.style.color !== "yellow") {
       boatName.style.color = "white";
     } else {
@@ -71,12 +71,12 @@ for (let i = 0; i < boats.length; i++) {
     }
   }
   function handleBoatsListMouseover() {
-    const boatName = (boats[i])
+    const boatName = boats[i];
 
     if (boatName.style.color === "black") {
-      boatName.style.color = "yellow"
+      boatName.style.color = "yellow";
     } else if (boatName.style.color === "yellow") {
-      boatName.style.color = "black"
+      boatName.style.color = "black";
     }
     for (item of boats) {
       if (boatName.style.color === "white") {
@@ -95,8 +95,6 @@ for (let i = 0; i < boats.length; i++) {
 let horizontal = true;
 let vertical = false;
 
-//End Temporary for testing
-
 const nameInputSectionHTML = `<h2>Enter your name</h2>
     <form action="">
         <label for="name">Name:</label><br>
@@ -107,10 +105,9 @@ const nameInputSectionHTML = `<h2>Enter your name</h2>
 nameInputSection.innerHTML = nameInputSectionHTML;
 const nameSubmitBtn = document.getElementById("nameSubmitBtn");
 
-
 function handleNameSubmitBtnClicked(e) {
-  e.preventDefault()
-  playerName = (document.getElementById("name").value)
+  e.preventDefault();
+  playerName = document.getElementById("name").value;
   nameInputSection.innerHTML = `<h2>Welcome, ${playerName}!</h2>
   <h3>Place your ships!</h3>`;
 }
@@ -142,6 +139,9 @@ for (let row = 0; row < 10; row++) {
     square.textContent = ` ${column}-${row} `;
 
     function handleClickedSquare() {
+      let initialRow = square.id[square.id.length - 3];
+      let initialCol = square.id[square.id.length - 1];
+
       if (boat?.length > 0) {
         let squares = document.getElementsByClassName("gameSquare");
         for (box of squares) {
@@ -149,52 +149,46 @@ for (let row = 0; row < 10; row++) {
             box.style.backgroundColor = "black";
           }
         }
-
-        // const coloredSquares = {}
         for (let i = 0; i < boat.length; i++) {
           if (vertical) {
-            let initialRow = square.id[square.id.length - 3];
-            let initialCol = square.id[square.id.length - 1];
-
             let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
             let endPosition = +initialCol + boat.length;
-            if (endPosition < 11) {
-              if (document.getElementById(position).style.color === "blue") {
-                coloredSquares[(document.getElementById(position).id)] = document.getElementById(position).style.backgroundColor
-                console.log(coloredSquares)
-                console.log(Object.keys(coloredSquares))
-                if (Object.keys(coloredSquares).includes(!"black")) {
-                  console.log(coloredSquares)
-                  // return;
-                } else {
-                document.getElementById(position).style.backgroundColor = "red";
+
+            if (endPosition <= 10) {
+              if (checkPositionsValidity(initialRow, initialCol) === false) {
+                return;
               }
-              }
-            } else {
-              // console.log("won't fit");
-              if (document.getElementById(position)) {
-                document.getElementById(position).style.backgroundColor = "gray";
+              const location = document.getElementById(position);
+              if (location.style.color !== "blue") {
+                location.style.backgroundColor = "red";
+              } else if (location.style.backgroundColor === "white") {
+                return;
+              } else {
+                location.style.backgroundColor = "gray";
               }
             }
           }
 
           if (horizontal) {
-            let initialRow = +square.id[square.id.length - 3];
-            let initialCol = +square.id[square.id.length - 1];
-
-            let position = `grid-item-${initialRow + i}_${initialCol}`;
-
+            let position = `grid-item-${+initialRow + i}_${initialCol}`;
             let endPosition = +initialRow + boat.length;
 
-            if (endPosition < 11) {
-              if (document.getElementById(position).style.color !== "blue") {
-                document.getElementById(position).style.backgroundColor = "green";
+            if (endPosition <= 10) {
+              if (checkPositionsValidity(initialRow, initialCol) === false) {
+                return;
               }
-            } else {
-              //   console.log("won't fit");
-              if (document.getElementById(position)) {
-                document.getElementById(position).style.backgroundColor = "gray";
+              const location = document.getElementById(position);
+              // console.log("location", location);
+              if (location.style.color && location.style.color !== "blue") {
+                location.style.backgroundColor = "green";
+              } else if (
+                location.style.backgroundColor &&
+                location.style.backgroundColor === "white"
+              ) {
+                return;
+              } else {
+                location.style.backgroundColor = "gray";
               }
             }
           }
@@ -205,34 +199,50 @@ for (let row = 0; row < 10; row++) {
     }
 
     function checkPositionsValidity(initialRow, initialCol) {
-      let positionsToCheck = "";
-      const coloredSquares = {}
-
-      for (let i = 0; i < boat.length; i++) {
-        if (vertical) {
-          let position = `grid-item-${initialRow}_${+initialCol + i}`;
-          if (document.getElementById(position).style.backgroundColor === "white") {
-            return;
-          } else {
-            positionsToCheck += "x";
+      if (boat) {
+        let mayPlace = "";
+        for (let i = 0; i < boat.length; i++) {
+          if (vertical) {
+            let position = `grid-item-${initialRow}_${+initialCol + i}`;
+            if (
+              document.getElementById(position)?.style.backgroundColor !==
+              "white"
+            )  {
+              mayPlace += "x";
+              if (mayPlace.length === boat.length) {
+                console.log("1")
+                return true;
+              }
+            }
+          }
+          if (horizontal) {
+            let position = `grid-item-${initialRow + i}_${initialCol}`;
+            if (
+              document.getElementById(position)?.style.backgroundColor !==
+              "white"
+            ) {
+              mayPlace += "x";
+              if (mayPlace.length === boat.length) {
+                console.log("2")
+                return true;
+              }
+            }
           }
         }
-        if (horizontal) {
-          let position = `grid-item-${initialRow + i}_${initialCol}`;
-          if (document.getElementById(position).style.backgroundColor === "white") {
-            return;
-          } else {
-            positionsToCheck += "x";
-          }
-        }
-        if (positionsToCheck.length != boat.length) {
-          return false;
-        }
+      } else if (mayPlace.length !== boat.length) {
+        console.log("3")
+        return false;
+      } else {
+        console.log("4")
+        return;
       }
     }
 
     function handleDblClickedSquare(e) {
       e.preventDefault();
+            let initialRow = square.id[square.id.length - 3];
+            let initialCol = square.id[square.id.length - 1];
+
       if (boat?.length > 0) {
         let squares = document.getElementsByClassName("gameSquare");
         for (box of squares) {
@@ -244,61 +254,67 @@ for (let row = 0; row < 10; row++) {
           }
         }
 
-    function sendShipData (coordinates) {
-        const id = document.getElementById(coordinates).id;
-        const ws = new WebSocket("ws://127.0.0.1:3400");
-        ws.addEventListener("open", () => {
-          ws.send(
-            JSON.stringify({ enemyCoordinates: id })
-          );
-        });
-    }
+        function sendShipData(coordinates) {
+          const id = document.getElementById(coordinates).id;
+          const ws = new WebSocket("ws://127.0.0.1:3400");
+          ws.addEventListener("open", () => {
+            ws.send(JSON.stringify({ enemyCoordinates: id }));
+          });
+        }
+
         for (let i = 0; i < boat.length; i++) {
           if (vertical) {
-            let initialRow = square.id[square.id.length - 3];
-
-            let initialCol = square.id[square.id.length - 1];
-
             let position = `grid-item-${initialRow}_${+initialCol + i}`;
-            if (
-              document.getElementById(position).style.backgroundColor === "white"
-            ) {
-              return;
-            }
+            // if (
+              if (checkPositionsValidity(initialRow, initialCol) === false) 
+                {
+                  return;
+                }
+                if (checkPositionsValidity(initialRow, initialCol) === true) {
+                  document.getElementById(position).style.backgroundColor ===
+                  "white"
+                }
             let endPosition = +initialCol + boat.length;
-            if (endPosition < 11) {
-              document.getElementById(position).style.color = "blue";
-              sendShipData(position)
-
-              document.getElementById(position).style.backgroundColor = "white";
-            } else {
-              if (document.getElementById(position)) {
-                document.getElementById(position).style.backgroundColor = "gray";
+            if (endPosition <= 10) {
+              // if (checkPositionsValidity(initialRow, initialCol) === false) {
+              //   return;
+              // }
+                if (checkPositionsValidity(initialRow, initialCol) === true) {
+                  document.getElementById(position).style.backgroundColor = "white";
+                  document.getElementById(position).style.color = "blue";
+                  sendShipData(position);
               }
-            }
+            } 
           }
 
           if (horizontal) {
-            let initialRow = +square.id[square.id.length - 3];
-            let initialCol = +square.id[square.id.length - 1];
-
-            let position = `grid-item-${initialRow + i}_${initialCol}`;
+            // let initialRow = +square.id[square.id.length - 3];
+            // let initialCol = +square.id[square.id.length - 1];
+            let position = `grid-item-${+initialRow + i}_${initialCol}`;
             if (
-              document.getElementById(position).style.backgroundColor === "white"
+              document.getElementById(position).style.backgroundColor ===
+              "white"
             ) {
               return;
             }
             let endPosition = +initialRow + boat.length;
 
-            if (endPosition < 11) {
-              document.getElementById(position).style.color = "blue";
-              sendShipData(position)
-              document.getElementById(position).style.backgroundColor = "white";
-            } else {
-              if (document.getElementById(position)) {
-                document.getElementById(position).style.backgroundColor = "gray";
+            if (endPosition <= 10) {
+              // if (checkPositionsValidity(initialRow, initialCol) === false) {
+              //   return;
+              // }
+              if (checkPositionsValidity(initialRow, initialCol) === true) {
+                document.getElementById(position).style.color = "blue";
+                sendShipData(position);
+                document.getElementById(position).style.backgroundColor = "white";
               }
-            }
+            } 
+            // else {
+            //   if (document.getElementById(position)) {
+            //     document.getElementById(position).style.backgroundColor =
+            //       "gray";
+            //   }
+            // }
           }
         }
       } else {

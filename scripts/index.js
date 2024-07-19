@@ -155,42 +155,46 @@ for (let row = 0; row < 10; row++) {
             let endPosition = +initialCol + boat.length;
 
             if (endPosition <= 10) {
-              // if (checkPositionsValidity(initialRow, initialCol) === false) {
-              //   return;
-              // }
               const location = document.getElementById(position);
               if (location.style.color !== "blue") {
                 location.style.backgroundColor = "red";
               } else if (location.style.backgroundColor === "white") {
                 return;
-                // } else {
-                // location.style.backgroundColor = "gray";
+              }
+            } else if (endPosition > 10) {
+              const location = document.getElementById(position);
+              try {
+                if (location.style.backgroundColor !== 'white') {
+                  location.style.backgroundColor = "gray";
+                }
+              } catch {
+                return;
               }
             }
           }
 
           if (horizontal) {
             let position = `grid-item-${+initialRow + i}_${initialCol}`;
+
             let endPosition = +initialRow + boat.length;
 
             if (endPosition <= 10) {
-              // if (checkPositionsValidity(initialRow, initialCol) === false) {
-              //   return;
-              // }
               const location = document.getElementById(position);
-              if (location.style.color && location.style.color !== "blue") {
+              if (location.style.color !== "blue") {
                 location.style.backgroundColor = "green";
-              } else if (
-                location.style.backgroundColor &&
-                location.style.backgroundColor === "white"
-              ) {
+              } else if (location.style.backgroundColor === "white") {
                 return;
               }
-              // else
-              // {
-              //   location.style.backgroundColor = "gray";
-              // }
-            }
+              } else if (endPosition > 10) {
+                const location = document.getElementById(position);
+                try {
+                  if (location.style.backgroundColor !== 'white') {
+                    location.style.backgroundColor = "gray";
+                  }
+                } catch {
+                  return;
+                }
+              }
           }
         }
       } else {

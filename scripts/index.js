@@ -64,29 +64,42 @@ for (let i = 0; i < boats.length; i++) {
     }
 
     for (item of boats) {
+      if (item.style.color !== "brown") {
       if (item.id !== boats[i].id) {
         item.style.color = "black";
       }
     }
-  }
+    }
+}
   function handleBoatsListMouseover() {
     const boatName = boats[i];
-
-    if (boatName.style.color === "black") {
-      boatName.style.color = "yellow";
-    } else if (boatName.style.color === "yellow") {
-      boatName.style.color = "black";
+    if (boatName.style.color === "brown") {
+      boatName.removeEventListener("click", handleBoatsListClicks);
+      return;
     }
+    
+    boats[i].addEventListener("click", handleBoatsListClicks);
+    try {
+      if (boatName.style.color === "black") {
+        boatName.style.color = "yellow";
+      } else if (boatName.style.color === "yellow") {
+        boatName.style.color = "black";
+      }
+    } catch {
+      return;
+    }
+
     for (item of boats) {
+      if (item.style.color !== "brown") {
       if (boatName.style.color === "white") {
         return;
       } else if (item.id !== boatName.id && item.style.color !== "white") {
         item.style.color = "black";
       }
     }
+    }
   }
 
-  boats[i].addEventListener("click", handleBoatsListClicks);
   boats[i].addEventListener("mouseover", handleBoatsListMouseover);
 }
 
@@ -146,15 +159,17 @@ for (let row = 0; row < 10; row++) {
           if (box.style.color !== "blue") {
             box.style.backgroundColor = "black";
           }
-          for (boatName of Object.keys(boatObject)) {
-            // console.log("box.className",box.className)
-            console.log("box.id",box.id)
-            console.log(boatName)
+          // for (boatName of Object.keys(boatObject)) {
+          //   console.log(boatName)
+        
+          //   // console.log("box.className",box.className)
+          //   // console.log("box.id",box.id)
+          //   // console.log(boatName)
 
-            if (box.className === boatName) {
-              console.log("here")
-            }
-          }
+          //   if (box.className === boatName) {
+          //     console.log("here")
+          //   }
+          // }
         }
         for (let i = 0; i < boat.length; i++) {
           if (vertical) {
@@ -264,6 +279,7 @@ for (let row = 0; row < 10; row++) {
             for (let i = 0; i < boat.length; i++) {
               let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
+              try {
               document.getElementById(position).style.backgroundColor ===
                 "white";
               let endPosition = +initialCol + boat.length;
@@ -273,6 +289,9 @@ for (let row = 0; row < 10; row++) {
                 document.getElementById(position).style.color = "blue";
                 sendShipData(position);
               }
+            } catch {
+              return;
+            }            
             }
           }
         }
@@ -281,7 +300,7 @@ for (let row = 0; row < 10; row++) {
           if (checkPositionsValidity(initialRow, initialCol) === true) {
             for (let i = 0; i < boat.length; i++) {
               let position = `grid-item-${+initialRow + i}_${initialCol}`;
-
+              try {
               document.getElementById(position).style.backgroundColor ===
                 "white";
               let endPosition = +initialRow + boat.length;
@@ -292,9 +311,31 @@ for (let row = 0; row < 10; row++) {
                 document.getElementById(position).style.color = "blue";
                 sendShipData(position);
               }
+            } catch {
+              return;
+            }
             }
           }
         }
+      }
+      for (item of boats) {
+          if (item.className.split([" "])[1] === boat) {
+          item.style.color = "brown"
+          }
+      }
+      boat = ""
+      let counter = 0;
+      for (item of boats) {
+        try {
+          if (item.style.color === "brown") {
+            counter++
+          }
+        } catch {
+          return;
+        }
+      }
+      if (counter === 5) {
+        console.log("game start")
       }
     }
 

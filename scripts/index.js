@@ -126,7 +126,7 @@ function createGrid() {
   grid.style.display = "grid";
   grid.style.gridTemplateColumns = "repeat(10,1fr)";
   grid.style.gridTemplateRows = "repeat(10,1fr)";
-  grid.style.width = "42.5vw";
+  grid.style.width = "32.5vw";
   // grid.style.width = "20vw";
   grid.style.gap = ".25vw";
   // grid.style.width = "20em";
@@ -140,8 +140,8 @@ function createGrid() {
       const square = document.createElement("div");
       square.style.backgroundColor = "black";
       square.style.color = "white";
-      square.style.height = "4vw";
-      square.style.width = "4vw";
+      square.style.height = "3vw";
+      square.style.width = "3vw";
       // square.style.height = "2em";
       // square.style.width = "2em";
       const identifier = `grid-item-${column}_${row}`;
@@ -313,7 +313,7 @@ function createGrid() {
             return;
           }
         }
-        if (counter === 1) {
+        if (counter === 5) {
           let boatPositions = "";
           let squares = document.getElementsByClassName("gameSquare");
 
@@ -366,9 +366,10 @@ function createEnemyGrid(boatPositions) {
   enemyGrid.style.display = "grid";
   enemyGrid.style.gridTemplateColumns = "repeat(10,1fr)";
   enemyGrid.style.gridTemplateRows = "repeat(10,1fr)";
-  enemyGrid.style.width = "20em";
+  enemyGrid.style.width = "32.5vw";
   // enemyGrid.style.width = "20em";
-  enemyGrid.style.gap = ".25em";
+  enemyGrid.style.gap = ".25vw";
+  // enemyGrid.style.gap = ".25em";
 
   document.getElementById("enemyBoard").appendChild(enemyGrid);
 
@@ -377,8 +378,8 @@ function createEnemyGrid(boatPositions) {
       const square = document.createElement("div");
       square.style.backgroundColor = "black";
       square.style.color = "white";
-      square.style.height = "2em";
-      square.style.width = "2em";
+      square.style.height = "3vw";
+      square.style.width = "3vw";
       const identifier = `enemy-grid-item-${column}_${row}`;
       square.id = identifier;
       square.className = "enemyGameSquare";

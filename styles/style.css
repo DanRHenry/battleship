@@ -2,20 +2,27 @@ body {
     background-color: gray;
 }
 
-#enemyBoard {
+#gameBoard, #enemyBoard {
     display: flex;
     flex-direction: column;
     text-align: center;
-    min-height: 22.25em;
-    width: 22.25em;
+    background-color: blue;
+    min-height: clamp(300px, 32.5vw, 40vh);
+    width: clamp(300px, 32.5vw, 40vh);
 }
 
 #enemyGrid, #playerGrid {
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* text-align: center; */
     background-color: red;
     /* margin-left: 40vw; */
-    text-align: center;
+    /* text-align: center; */
 }
 
 .gameSquare {
+    /* display: flex;
+    flex-direction: column;
+    text-align: center; */
     user-select: none;
 }

@@ -40,13 +40,12 @@ const boatObject = {
 };
 
 let boat;
-// let boat = "xxxx";
 
 for (element of Object.keys(boatObject)) {
   let localboat = document.createElement("div");
   localboat.textContent = element;
   localboat.id = element;
-  localboat.className = "boat";
+  localboat.className = `boat ${boatObject[element]}`;
   localboat.style.color = "black";
   localboat.style.userSelect = "none";
   document.getElementById("boatList").appendChild(localboat);
@@ -137,7 +136,7 @@ for (let row = 0; row < 10; row++) {
     square.className = "gameSquare";
     square.textContent = ` ${column}-${row} `;
 
-    function handleClickedSquare() {
+    function handleMouseover() {
       let initialRow = square.id[square.id.length - 3];
       let initialCol = square.id[square.id.length - 1];
 
@@ -146,6 +145,15 @@ for (let row = 0; row < 10; row++) {
         for (box of squares) {
           if (box.style.color !== "blue") {
             box.style.backgroundColor = "black";
+          }
+          for (boatName of Object.keys(boatObject)) {
+            // console.log("box.className",box.className)
+            console.log("box.id",box.id)
+            console.log(boatName)
+
+            if (box.className === boatName) {
+              console.log("here")
+            }
           }
         }
         for (let i = 0; i < boat.length; i++) {
@@ -197,9 +205,7 @@ for (let row = 0; row < 10; row++) {
               }
           }
         }
-      } else {
-        square.removeEventListener("click", handleClickedSquare);
-      }
+      } 
     }
 
     function checkPositionsValidity(initialRow, initialCol) {
@@ -238,23 +244,12 @@ for (let row = 0; row < 10; row++) {
       }
     }
 
-    function handleDblClickedSquare(e) {
+    function handleRightClickedSquare(e) {
       e.preventDefault();
       let initialRow = square.id[square.id.length - 3];
       let initialCol = square.id[square.id.length - 1];
 
       if (boat?.length > 0) {
-        let squares = document.getElementsByClassName("gameSquare");
-
-        for (box of squares) {
-          if (box.style.color !== "blue") {
-            // box.style.backgroundColor = "black";
-          }
-
-          // if (box.style.color === "blue") {
-          //   console.log(box.id[box.id.length - 3], box.id[box.id.length - 1]);
-          // }
-        }
 
         function sendShipData(coordinates) {
           const id = document.getElementById(coordinates).id;
@@ -275,7 +270,6 @@ for (let row = 0; row < 10; row++) {
               if (endPosition <= 10) {
                 document.getElementById(position).style.backgroundColor =
                   "white";
-
                 document.getElementById(position).style.color = "blue";
                 sendShipData(position);
               }
@@ -302,20 +296,17 @@ for (let row = 0; row < 10; row++) {
           }
         }
       }
-      //  else {
-      //   square.removeEventListener("click", handleClickedSquare);
-      // }
     }
 
-    square.addEventListener("mouseover", handleClickedSquare);
+    square.addEventListener("mouseover", handleMouseover);
 
     square.addEventListener("click", () => {
       vertical = !vertical;
       horizontal = !horizontal;
-      handleClickedSquare();
+      handleMouseover();
     });
 
-    square.addEventListener("contextmenu", handleDblClickedSquare, false);
+    square.addEventListener("contextmenu", handleRightClickedSquare, false);
     grid.append(square);
   }
 }

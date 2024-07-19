@@ -2,6 +2,20 @@ body {
     background-color: gray;
 }
 
+#enemyBoard {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    min-height: 22.25em;
+    width: 22.25em;
+}
+
+#enemyGrid, #playerGrid {
+    background-color: red;
+    /* margin-left: 40vw; */
+    text-align: center;
+}
+
 .gameSquare {
     user-select: none;
 }

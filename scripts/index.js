@@ -395,63 +395,63 @@ function createEnemyGrid(boatPositions) {
         let initialRow = square.id[square.id.length - 3];
         let initialCol = square.id[square.id.length - 1];
 
-        // if (boat?.length > 0) {
-        //   let squares = document.getElementsByClassName("enemyGameSquare");
-        //   for (box of squares) {
-        //     if (box.style.color !== "blue") {
-        //       box.style.backgroundColor = "black";
-        //     }
-        //   }
-        //   for (let i = 0; i < boat.length; i++) {
-        //     if (vertical) {
-        //       let position = `grid-item-${initialRow}_${+initialCol + i}`;
+        if (boat?.length > 0) {
+          let squares = document.getElementsByClassName("enemyGameSquare");
+          for (box of squares) {
+            if (box.style.color !== "blue") {
+              box.style.backgroundColor = "black";
+            }
+          }
+          for (let i = 0; i < boat.length; i++) {
+            if (vertical) {
+              let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
-        //       let endPosition = +initialCol + boat.length;
+              let endPosition = +initialCol + boat.length;
 
-        //       if (endPosition <= 10) {
-        //         const location = document.getElementById(position);
-        //         if (location.style.color !== "blue") {
-        //           location.style.backgroundColor = "red";
-        //         } else if (location.style.backgroundColor === "white") {
-        //           return;
-        //         }
-        //       } else if (endPosition > 10) {
-        //         const location = document.getElementById(position);
-        //         try {
-        //           if (location.style.backgroundColor !== "white") {
-        //             location.style.backgroundColor = "gray";
-        //           }
-        //         } catch {
-        //           return;
-        //         }
-        //       }
-        //     }
+              if (endPosition <= 10) {
+                const location = document.getElementById(position);
+                if (location.style.color !== "blue") {
+                  location.style.backgroundColor = "red";
+                } else if (location.style.backgroundColor === "white") {
+                  return;
+                }
+              } else if (endPosition > 10) {
+                const location = document.getElementById(position);
+                try {
+                  if (location.style.backgroundColor !== "white") {
+                    location.style.backgroundColor = "gray";
+                  }
+                } catch {
+                  return;
+                }
+              }
+            }
 
-        //     if (horizontal) {
-        //       let position = `grid-item-${+initialRow + i}_${initialCol}`;
+            if (horizontal) {
+              let position = `grid-item-${+initialRow + i}_${initialCol}`;
 
-        //       let endPosition = +initialRow + boat.length;
+              let endPosition = +initialRow + boat.length;
 
-        //       if (endPosition <= 10) {
-        //         const location = document.getElementById(position);
-        //         if (location.style.color !== "blue") {
-        //           location.style.backgroundColor = "green";
-        //         } else if (location.style.backgroundColor === "white") {
-        //           return;
-        //         }
-        //       } else if (endPosition > 10) {
-        //         const location = document.getElementById(position);
-        //         try {
-        //           if (location.style.backgroundColor !== "white") {
-        //             location.style.backgroundColor = "gray";
-        //           }
-        //         } catch {
-        //           return;
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
+              if (endPosition <= 10) {
+                const location = document.getElementById(position);
+                if (location.style.color !== "blue") {
+                  location.style.backgroundColor = "green";
+                } else if (location.style.backgroundColor === "white") {
+                  return;
+                }
+              } else if (endPosition > 10) {
+                const location = document.getElementById(position);
+                try {
+                  if (location.style.backgroundColor !== "white") {
+                    location.style.backgroundColor = "gray";
+                  }
+                } catch {
+                  return;
+                }
+              }
+            }
+          }
+        }
       }
 
       function checkPositionsValidity(initialRow, initialCol) {

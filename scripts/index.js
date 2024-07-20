@@ -229,8 +229,6 @@ function createGrid() {
               }
             }
             if (horizontal) {
-              console.log("here1")
-
               let position = `grid-item-${+initialRow + i}_${initialCol}`;
               if (
                 document.getElementById(position)?.style.backgroundColor !==
@@ -262,7 +260,6 @@ function createGrid() {
                 let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
                 try {
-                  console.log("herevert")
                   document.getElementById(position).style.backgroundColor ===
                     "white";
                   let endPosition = +initialCol + boat.length;
@@ -276,6 +273,12 @@ function createGrid() {
                   return;
                 }
               }
+              for (item of boats) {
+                if (item.className.split([" "])[1] === boat) {
+                  item.style.color = "brown";
+                }
+              }
+              boat = "";
             }
           }
 
@@ -285,7 +288,6 @@ function createGrid() {
               for (let i = 0; i < boat.length; i++) {
                 let position = `grid-item-${+initialRow + i}_${initialCol}`;
                 try {
-                  console.log("herehoriz")
                   document.getElementById(position).style.backgroundColor ===
                     "white";
                   let endPosition = +initialRow + boat.length;
@@ -300,16 +302,16 @@ function createGrid() {
                   return;
                 }
               }
+              for (item of boats) {
+                if (item.className.split([" "])[1] === boat) {
+                  item.style.color = "brown";
+                }
+              }
+              boat = "";
             }
           }
         }
 
-        for (item of boats) {
-          if (item.className.split([" "])[1] === boat) {
-            item.style.color = "brown";
-          }
-        }
-        boat = "";
         let counter = 0;
         for (item of boats) {
           try {
@@ -502,8 +504,8 @@ function createEnemyGrid(boatPositions) {
                 let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
                 try {
-                  document.getElementById(position).style.backgroundColor ===
-                    "white";
+                  // document.getElementById(position).style.backgroundColor ===
+                  //   "white";
                   let endPosition = +initialCol + boat.length;
                   if (endPosition <= 10) {
                     document.getElementById(position).style.backgroundColor =
@@ -523,14 +525,13 @@ function createEnemyGrid(boatPositions) {
               for (let i = 0; i < boat.length; i++) {
                 let position = `grid-item-${+initialRow + i}_${initialCol}`;
                 try {
-                  document.getElementById(position).style.backgroundColor ===
-                    "white";
+                  // document.getElementById(position).style.backgroundColor ===
+                  //   "white";
                   let endPosition = +initialRow + boat.length;
                   if (endPosition <= 10) {
                     document.getElementById(position).style.backgroundColor =
                       "white";
                     document.getElementById(position).style.color = "blue";
-                    // sendShipData(position);
                   }
                 } catch {
                   return;

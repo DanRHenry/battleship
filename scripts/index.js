@@ -229,6 +229,8 @@ function createGrid() {
               }
             }
             if (horizontal) {
+              console.log("here1")
+
               let position = `grid-item-${+initialRow + i}_${initialCol}`;
               if (
                 document.getElementById(position)?.style.backgroundColor !==
@@ -260,6 +262,7 @@ function createGrid() {
                 let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
                 try {
+                  console.log("herevert")
                   document.getElementById(position).style.backgroundColor ===
                     "white";
                   let endPosition = +initialCol + boat.length;
@@ -278,9 +281,11 @@ function createGrid() {
 
           if (horizontal) {
             if (checkPositionsValidity(initialRow, initialCol) === true) {
+
               for (let i = 0; i < boat.length; i++) {
                 let position = `grid-item-${+initialRow + i}_${initialCol}`;
                 try {
+                  console.log("herehoriz")
                   document.getElementById(position).style.backgroundColor ===
                     "white";
                   let endPosition = +initialRow + boat.length;
@@ -291,12 +296,14 @@ function createGrid() {
                     // sendShipData(position);
                   }
                 } catch {
+
                   return;
                 }
               }
             }
           }
         }
+
         for (item of boats) {
           if (item.className.split([" "])[1] === boat) {
             item.style.color = "brown";
@@ -325,7 +332,6 @@ function createGrid() {
               boatPositions += col;
             }
           }
-          // console.log(boatPositions)
           console.log("game start");
           const ws = new WebSocket("ws://127.0.0.1:3400");
           ws.addEventListener("open", () => {

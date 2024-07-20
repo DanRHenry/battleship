@@ -595,4 +595,3 @@ function createEnemyGrid(boatPositions) {
 //todo -- if colors are gray and the game hasn't begun yet, maybe allow for ships to be recalled. this could be accomplished by searching the grid for the matching id
 //todo -- work on websocket integration, player turns, etc.
 //todo -- use the enemyBoard string to determine hits
-//todo -- bug fix -- if the boat being placed runs into a white square, the ship will become unselectable, but not be placed

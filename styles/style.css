@@ -6,7 +6,7 @@ body {
     display: flex;
     flex-direction: column;
     text-align: center;
-    background-color: blue;
+    /* background-color: blue; */
     min-height: clamp(300px, 32.5vw, 40vh);
     width: clamp(300px, 32.5vw, 40vh);
 }
@@ -15,7 +15,7 @@ body {
     /* display: flex; */
     /* flex-direction: column; */
     /* text-align: center; */
-    background-color: red;
+    /* background-color: red; */
     /* margin-left: 40vw; */
     /* text-align: center; */
 }

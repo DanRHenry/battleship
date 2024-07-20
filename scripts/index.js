@@ -495,85 +495,85 @@ function createEnemyGrid(boatPositions) {
         let initialRow = square.id[square.id.length - 3];
         let initialCol = square.id[square.id.length - 1];
 
-        // if (boat?.length > 0) {
-        //   if (vertical) {
-        //     if (checkPositionsValidity(initialRow, initialCol) === true) {
-        //       for (let i = 0; i < boat.length; i++) {
-        //         let position = `grid-item-${initialRow}_${+initialCol + i}`;
+        if (boat?.length > 0) {
+          if (vertical) {
+            if (checkPositionsValidity(initialRow, initialCol) === true) {
+              for (let i = 0; i < boat.length; i++) {
+                let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
-        //         try {
-        //           document.getElementById(position).style.backgroundColor ===
-        //             "white";
-        //           let endPosition = +initialCol + boat.length;
-        //           if (endPosition <= 10) {
-        //             document.getElementById(position).style.backgroundColor =
-        //               "white";
-        //             document.getElementById(position).style.color = "blue";
-        //             // sendShipData(position);
-        //           }
-        //         } catch {
-        //           return;
-        //         }
-        //       }
-        //     }
-        //   }
+                try {
+                  document.getElementById(position).style.backgroundColor ===
+                    "white";
+                  let endPosition = +initialCol + boat.length;
+                  if (endPosition <= 10) {
+                    document.getElementById(position).style.backgroundColor =
+                      "white";
+                    document.getElementById(position).style.color = "blue";
+                    // sendShipData(position);
+                  }
+                } catch {
+                  return;
+                }
+              }
+            }
+          }
 
-        //   if (horizontal) {
-        //     if (checkPositionsValidity(initialRow, initialCol) === true) {
-        //       for (let i = 0; i < boat.length; i++) {
-        //         let position = `grid-item-${+initialRow + i}_${initialCol}`;
-        //         try {
-        //           document.getElementById(position).style.backgroundColor ===
-        //             "white";
-        //           let endPosition = +initialRow + boat.length;
-        //           if (endPosition <= 10) {
-        //             document.getElementById(position).style.backgroundColor =
-        //               "white";
-        //             document.getElementById(position).style.color = "blue";
-        //             // sendShipData(position);
-        //           }
-        //         } catch {
-        //           return;
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
-        // for (item of boats) {
-        //   if (item.className.split([" "])[1] === boat) {
-        //     item.style.color = "brown";
-        //   }
-        // }
-        // boat = "";
-        // let counter = 0;
-        // for (item of boats) {
-        //   try {
-        //     if (item.style.color === "brown") {
-        //       counter++;
-        //     }
-        //   } catch {
-        //     return;
-        //   }
-        // }
-        // if (counter === 1) {
-        //   let boatPositions = "";
-        //   let squares = document.getElementsByClassName("gameSquare");
+          if (horizontal) {
+            if (checkPositionsValidity(initialRow, initialCol) === true) {
+              for (let i = 0; i < boat.length; i++) {
+                let position = `grid-item-${+initialRow + i}_${initialCol}`;
+                try {
+                  document.getElementById(position).style.backgroundColor ===
+                    "white";
+                  let endPosition = +initialRow + boat.length;
+                  if (endPosition <= 10) {
+                    document.getElementById(position).style.backgroundColor =
+                      "white";
+                    document.getElementById(position).style.color = "blue";
+                    // sendShipData(position);
+                  }
+                } catch {
+                  return;
+                }
+              }
+            }
+          }
+        }
+        for (item of boats) {
+          if (item.className.split([" "])[1] === boat) {
+            item.style.color = "brown";
+          }
+        }
+        boat = "";
+        let counter = 0;
+        for (item of boats) {
+          try {
+            if (item.style.color === "brown") {
+              counter++;
+            }
+          } catch {
+            return;
+          }
+        }
+        if (counter === 1) {
+          let boatPositions = "";
+          let squares = document.getElementsByClassName("gameSquare");
 
-        //   for (item of squares) {
-        //     let row = item.id[item.id.length - 3];
-        //     let col = item.id[item.id.length - 1];
-        //     if (item.style.backgroundColor === "white") {
-        //       boatPositions += row;
-        //       boatPositions += col;
-        //     }
-        //   }
-        //   // console.log(boatPositions)
-        //   console.log("game start");
-        //   const ws = new WebSocket("ws://127.0.0.1:3400");
-        //   ws.addEventListener("open", () => {
-        //     ws.send(JSON.stringify({ boatPositions: boatPositions }));
-        //   });
-        // }
+          for (item of squares) {
+            let row = item.id[item.id.length - 3];
+            let col = item.id[item.id.length - 1];
+            if (item.style.backgroundColor === "white") {
+              boatPositions += row;
+              boatPositions += col;
+            }
+          }
+          // console.log(boatPositions)
+          console.log("game start");
+          const ws = new WebSocket("ws://127.0.0.1:3400");
+          ws.addEventListener("open", () => {
+            ws.send(JSON.stringify({ boatPositions: boatPositions }));
+          });
+        }
       }
 
       square.addEventListener("mouseover", handleMouseover);

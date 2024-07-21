@@ -20,6 +20,12 @@ ws.addEventListener("message", (message) => {
   }
 
   if (JSON.parse(message.data).boatPositions) {
+    let temp = ""
+    for (v of Object.values(boatPositions)) {
+      temp += v
+    }
+    console.log('temp',temp)
+    // console.log("boatPositions",Object.values(boatPositions))
     console.log(JSON.parse(message.data))
     createEnemyGrid(JSON.parse(message.data).boatPositions);
   }
@@ -342,7 +348,7 @@ function createGrid() {
           }
         }
 
-        if (counter === 5) {
+        if (counter === 1) {
 
           removeGameSquareFunctionality = true;
           // let squares = document.getElementsByClassName("gameSquare");

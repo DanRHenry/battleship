@@ -1,17 +1,23 @@
 const nameInputSection = document.getElementById("nameInputSection");
 let playerName = "";
+const id = Math.random()
+console.log(id)
 let boatPositions = {};
+let readyToPlay = false;
+
 const ws = new WebSocket("ws://127.0.0.1:3400");
 // ws.addEventListener("open", () => {
 //   console.log("socket open");
 // });
 let removeGameSquareFunctionality = false;
 
+ws.addEventListener("open", () => {
+  console.log("socket reopened");
+});
+
 ws.addEventListener("close", () => {
-  const ws = new WebSocket("ws://127.0.0.1:3400");
-  ws.addEventListener("open", () => {
-    console.log("socket reopened");
-  });
+  console.log("websocket closed")
+//   const ws = new WebSocket("ws://127.0.0.1:3400");
 });
 
 ws.addEventListener("message", (message) => {
@@ -19,6 +25,9 @@ ws.addEventListener("message", (message) => {
     return;
   }
 
+  if (JSON.parse(message.data).id === id) {
+    return;
+  }
   if (JSON.parse(message.data).boatPositions) {
     let temp = ""
     for (v of Object.values(boatPositions)) {
@@ -27,6 +36,9 @@ ws.addEventListener("message", (message) => {
     console.log('temp',temp)
     // console.log("boatPositions",Object.values(boatPositions))
     console.log(JSON.parse(message.data))
+    // while (readyToPlay === false) {
+    //   console.log("waiting...")
+    // }
     createEnemyGrid(JSON.parse(message.data).boatPositions);
   }
 });
@@ -348,7 +360,7 @@ function createGrid() {
           }
         }
 
-        if (counter === 1) {
+        if (counter === 5) {
 
           removeGameSquareFunctionality = true;
           // let squares = document.getElementsByClassName("gameSquare");
@@ -363,11 +375,12 @@ function createGrid() {
           // }
           // console.log("boatPositions",boatPositions)
           // console.log("game start");
-          const boatData = {"boatPositions": boatPositions}
+          const boatData = {"boatPositions": boatPositions, "id": id}
           const ws = new WebSocket("ws://127.0.0.1:3400");
           ws.addEventListener("open", () => {
             ws.send(JSON.stringify(boatData));
           });
+          readyToPlay = true;
         }
         boat = "";
       }

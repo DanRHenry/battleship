@@ -30,7 +30,7 @@ wss.on("connection", function connection(ws) {
           // client.send(message, { binary: isBinary });
         }
         else if(client != ws) {
-          console.log("different different different different different different different different ")
+          // console.log("different different different different different different different different ")
           client.send(message, { binary: isBinary})
         // if(client !== ws && client.readyState === WebSocket.OPEN) {
 

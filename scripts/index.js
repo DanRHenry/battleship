@@ -5,7 +5,7 @@ console.log(id);
 let boatPositions = {};
 let readyToPlay = false;
 let enemyCoordinates = [];
-
+const sunkBoats = [];
 const ws = new WebSocket("ws://127.0.0.1:3400");
 
 let removeGameSquareFunctionality = false;
@@ -426,11 +426,59 @@ function createEnemyGrid(boatPositions) {
         const clickedColumn = square.id[square.id.length - 3];
         const clickedRow = square.id[square.id.length - 1];
         const location = clickedColumn + clickedRow;
+
+        //! if the number of the iteration matches the length of the boatPositions object value, log a sink
+
+        //! Check the incoming enemy boatPositions object (to array)
         for (item of Object.keys(boatPositions)) {
-          for (let i = 0; i < boatPositions[item].length; i+=2) {
-            let check = (boatPositions[item][i]).toString() + (boatPositions[item][i+1]).toString()
+          for (let i = 0; i < boatPositions[item].length; i += 2) {
+            //! check is the coordinate pair from the boatPositions object
+            let check =
+              boatPositions[item][i].toString() +
+              boatPositions[item][i + 1].toString();
+
+            //! location is the spot clicked
+            //! if the location matches one of the coordinate pairs from the enemy boatPositions Object (if location === check)...
+
             if (location === check) {
-              square.style.backgroundColor = "orange"
+              //! change the clicked location backgroundColor to orange
+              square.style.backgroundColor = "orange";
+
+              //! for each position of the boatPositions object...
+              let counter = 0;
+              let currentBoat = boatPositions[item];
+              // console.log(boatPositions)
+              // console.log(item)
+              const enemyGameSquare =
+                document.getElementsByClassName("enemyGameSquare");
+              //!iterate over the enemyGameSquare array
+              for (let sq = 0; sq < enemyGameSquare.length; sq++) {
+                if (enemyGameSquare[sq].style.backgroundColor === "orange") {
+                  for (let i = 0; i < currentBoat.length; i += 2) {
+                    let c = currentBoat[i].toString();
+                    let r = currentBoat[i + 1].toString();
+                    let check = c + r;
+
+                    let col =
+                      enemyGameSquare[sq].id[
+                        enemyGameSquare[sq].id.length - 3
+                      ].toString();
+                    let row =
+                      enemyGameSquare[sq].id[
+                        enemyGameSquare[sq].id.length - 1
+                      ].toString();
+                    let esCheck = col + row;
+
+                    if (check === esCheck) {
+                      counter++;
+                    }
+                    if (counter === currentBoat.length / 2 && !sunkBoats.includes(item)) {
+                      console.log(item,"sunk");
+                      sunkBoats.push(item)
+                    }
+                  }
+                }
+              }
             }
           }
         }

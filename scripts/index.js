@@ -1,23 +1,22 @@
 const nameInputSection = document.getElementById("nameInputSection");
 let playerName = "";
-const id = Math.random()
-console.log(id)
+const id = Math.random();
+console.log(id);
 let boatPositions = {};
 let readyToPlay = false;
+let enemyCoordinates = [];
 
 const ws = new WebSocket("ws://127.0.0.1:3400");
-// ws.addEventListener("open", () => {
-//   console.log("socket open");
-// });
+
 let removeGameSquareFunctionality = false;
 
 ws.addEventListener("open", () => {
-  console.log("socket reopened");
+  console.log("socket open");
 });
 
 ws.addEventListener("close", () => {
-  console.log("websocket closed")
-//   const ws = new WebSocket("ws://127.0.0.1:3400");
+  console.log("websocket closed");
+  //   const ws = new WebSocket("ws://127.0.0.1:3400");
 });
 
 ws.addEventListener("message", (message) => {
@@ -26,19 +25,12 @@ ws.addEventListener("message", (message) => {
   }
 
   if (JSON.parse(message.data).id === id) {
-    return;
-  }
-  if (JSON.parse(message.data).boatPositions) {
-    let temp = ""
-    for (v of Object.values(boatPositions)) {
-      temp += v
-    }
-    console.log('temp',temp)
-    // console.log("boatPositions",Object.values(boatPositions))
-    console.log(JSON.parse(message.data))
-    // while (readyToPlay === false) {
-    //   console.log("waiting...")
-    // }
+    // return;
+    console.log(id);
+  } else if (JSON.parse(message.data).boatPositions) {
+    // console.log("boatPositions:",boatPositions)
+    // console.log(JSON.parse(message.data));
+
     createEnemyGrid(JSON.parse(message.data).boatPositions);
   }
 });
@@ -271,8 +263,12 @@ function createGrid() {
         e.preventDefault();
         if (removeGameSquareFunctionality === true) {
           for (square of document.getElementsByClassName("gameSquare")) {
-            square.removeEventListener("contextmenu", handleRightClickedSquare, false);
-            return;            
+            square.removeEventListener(
+              "contextmenu",
+              handleRightClickedSquare,
+              false
+            );
+            return;
           }
         }
 
@@ -283,70 +279,71 @@ function createGrid() {
           for (pos of Object.keys(boatObject)) {
             if (boat === boatObject[pos]) {
               boatPositions[pos] = [];
-              console.log(boat)
+              // console.log(boat)
 
-            if (vertical) {
-              if (checkPositionsValidity(initialRow, initialCol) === true) {
-                for (let i = 0; i < boat.length; i++) {
-                  let position = `grid-item-${initialRow}_${+initialCol + i}`;
+              if (vertical) {
+                if (checkPositionsValidity(initialRow, initialCol) === true) {
+                  for (let i = 0; i < boat.length; i++) {
+                    let position = `grid-item-${initialRow}_${+initialCol + i}`;
 
-                  try {
-                    boatPositions[pos].push(initialRow);
-                    boatPositions[pos].push(initialCol + i);
+                    try {
+                      boatPositions[pos].push(+initialRow);
+                      boatPositions[pos].push(+initialCol + i);
 
-                    document.getElementById(position).style.backgroundColor ===
-                      "white";
-                    let endPosition = +initialCol + boat.length;
-                    if (endPosition <= 10) {
-                      document.getElementById(position).style.backgroundColor =
-                        "white";
-                      document.getElementById(position).style.color = "blue";
+                      document.getElementById(position).style
+                        .backgroundColor === "white";
+                      let endPosition = +initialCol + boat.length;
+                      if (endPosition <= 10) {
+                        document.getElementById(
+                          position
+                        ).style.backgroundColor = "white";
+                        document.getElementById(position).style.color = "blue";
+                      }
+                    } catch {
+                      return;
                     }
-                  } catch {
-                    return;
                   }
-                }
-                for (item of boats) {
-                  if (item.className.split([" "])[1] === boat) {
-                    item.style.color = "brown";
+                  for (item of boats) {
+                    if (item.className.split([" "])[1] === boat) {
+                      item.style.color = "brown";
+                    }
                   }
                 }
               }
-            }
 
-            if (horizontal) {
-              if (checkPositionsValidity(initialRow, initialCol) === true) {
-                for (let i = 0; i < boat.length; i++) {
-                  let position = `grid-item-${+initialRow + i}_${initialCol}`;
-                  try {
-                    boatPositions[pos].push(initialRow + i);
-                    boatPositions[pos].push(initialCol);
+              if (horizontal) {
+                if (checkPositionsValidity(initialRow, initialCol) === true) {
+                  for (let i = 0; i < boat.length; i++) {
+                    let position = `grid-item-${+initialRow + i}_${initialCol}`;
+                    try {
+                      boatPositions[pos].push(+initialRow + i);
+                      boatPositions[pos].push(+initialCol);
 
-                    document.getElementById(position).style.backgroundColor ===
-                      "white";
-                    let endPosition = +initialRow + boat.length;
-                    if (endPosition <= 10) {
-                      document.getElementById(position).style.backgroundColor =
-                        "white";
-                      document.getElementById(position).style.color = "blue";
-                      // sendShipData(position);
+                      document.getElementById(position).style
+                        .backgroundColor === "white";
+                      let endPosition = +initialRow + boat.length;
+                      if (endPosition <= 10) {
+                        document.getElementById(
+                          position
+                        ).style.backgroundColor = "white";
+                        document.getElementById(position).style.color = "blue";
+                        // sendShipData(position);
+                      }
+                    } catch {
+                      return;
                     }
-                  } catch {
-                    return;
                   }
-                }
-                for (item of boats) {
-                  if (item.className.split([" "])[1] === boat) {
-                    item.style.color = "brown";
+                  for (item of boats) {
+                    if (item.className.split([" "])[1] === boat) {
+                      item.style.color = "brown";
+                    }
                   }
+                  boat = "";
                 }
-                boat = "";
               }
             }
           }
-
-          }
-          console.log("boatpositions:",boatPositions)
+          // console.log("boatpositions:",boatPositions)
         }
 
         let counter = 0;
@@ -361,21 +358,8 @@ function createGrid() {
         }
 
         if (counter === 5) {
-
           removeGameSquareFunctionality = true;
-          // let squares = document.getElementsByClassName("gameSquare");
-
-          // for (item of squares) {
-          //   // let row = item.id[item.id.length - 3];
-          //   // let col = item.id[item.id.length - 1];
-          //   // if (item.style.backgroundColor === "white") {
-          //   //   boatPositions += row;
-          //   //   boatPositions += col;
-          //   // }
-          // }
-          // console.log("boatPositions",boatPositions)
-          // console.log("game start");
-          const boatData = {"boatPositions": boatPositions, "id": id}
+          const boatData = { boatPositions: boatPositions, id: id };
           const ws = new WebSocket("ws://127.0.0.1:3400");
           ws.addEventListener("open", () => {
             ws.send(JSON.stringify(boatData));
@@ -403,6 +387,8 @@ function createGrid() {
 createGrid();
 
 function createEnemyGrid(boatPositions) {
+  // console.log("boatPositions", boatPositions);
+
   const hr = document.createElement("div");
   hr.style.width = "80vw";
   // hr.style.width = "80vw"
@@ -434,202 +420,23 @@ function createEnemyGrid(boatPositions) {
       const identifier = `enemy-grid-item-${column}_${row}`;
       square.id = identifier;
       square.className = "enemyGameSquare";
-      square.textContent = ` ${column}-${row} `;
 
-      function handleMouseover() {
-        let initialRow = square.id[square.id.length - 3];
-        let initialCol = square.id[square.id.length - 1];
-
-        if (boat?.length > 0) {
-          let squares = document.getElementsByClassName("enemyGameSquare");
-          for (box of squares) {
-            if (box.style.color !== "blue") {
-              box.style.backgroundColor = "black";
-            }
-          }
-          for (let i = 0; i < boat.length; i++) {
-            if (vertical) {
-              let position = `grid-item-${initialRow}_${+initialCol + i}`;
-
-              let endPosition = +initialCol + boat.length;
-
-              if (endPosition <= 10) {
-                const location = document.getElementById(position);
-                if (location.style.color !== "blue") {
-                  location.style.backgroundColor = "red";
-                } else if (location.style.backgroundColor === "white") {
-                  return;
-                }
-              } else if (endPosition > 10) {
-                const location = document.getElementById(position);
-                try {
-                  if (location.style.backgroundColor !== "white") {
-                    location.style.backgroundColor = "gray";
-                  }
-                } catch {
-                  return;
-                }
-              }
-            }
-
-            if (horizontal) {
-              let position = `grid-item-${+initialRow + i}_${initialCol}`;
-
-              let endPosition = +initialRow + boat.length;
-
-              if (endPosition <= 10) {
-                const location = document.getElementById(position);
-                if (location.style.color !== "blue") {
-                  location.style.backgroundColor = "green";
-                } else if (location.style.backgroundColor === "white") {
-                  return;
-                }
-              } else if (endPosition > 10) {
-                const location = document.getElementById(position);
-                try {
-                  if (location.style.backgroundColor !== "white") {
-                    location.style.backgroundColor = "gray";
-                  }
-                } catch {
-                  return;
-                }
-              }
+      function handleClick() {
+        square.style.backgroundColor = "red";
+        const clickedColumn = square.id[square.id.length - 3];
+        const clickedRow = square.id[square.id.length - 1];
+        const location = clickedColumn + clickedRow;
+        for (item of Object.keys(boatPositions)) {
+          for (let i = 0; i < boatPositions[item].length; i+=2) {
+            let check = (boatPositions[item][i]).toString() + (boatPositions[item][i+1]).toString()
+            if (location === check) {
+              square.style.backgroundColor = "orange"
             }
           }
         }
       }
 
-      function checkPositionsValidity(initialRow, initialCol) {
-        if (boat) {
-          let mayPlace = "";
-          for (let i = 0; i < boat.length; i++) {
-            if (vertical) {
-              let position = `grid-item-${initialRow}_${+initialCol + i}`;
-              if (
-                document.getElementById(position)?.style.backgroundColor !==
-                "white"
-              ) {
-                mayPlace += "x";
-                if (mayPlace.length === boat.length) {
-                  return true;
-                }
-              }
-            }
-            if (horizontal) {
-              let position = `grid-item-${+initialRow + i}_${initialCol}`;
-              if (
-                document.getElementById(position)?.style.backgroundColor !==
-                "white"
-              ) {
-                mayPlace += "x";
-                if (mayPlace.length === boat.length) {
-                  return true;
-                }
-              }
-            }
-          }
-        } else if (mayPlace.length !== boat.length) {
-          return false;
-        } else {
-          return;
-        }
-      }
-
-      function handleRightClickedSquare(e) {
-        e.preventDefault();
-        let initialRow = square.id[square.id.length - 3];
-        let initialCol = square.id[square.id.length - 1];
-
-        if (boat?.length > 0) {
-          if (vertical) {
-            if (checkPositionsValidity(initialRow, initialCol) === true) {
-              for (let i = 0; i < boat.length; i++) {
-                let position = `grid-item-${initialRow}_${+initialCol + i}`;
-
-                try {
-                  // document.getElementById(position).style.backgroundColor ===
-                  //   "white";
-                  let endPosition = +initialCol + boat.length;
-                  if (endPosition <= 10) {
-                    document.getElementById(position).style.backgroundColor =
-                      "white";
-                    document.getElementById(position).style.color = "blue";
-                    // sendShipData(position);
-                  }
-                } catch {
-                  return;
-                }
-              }
-            }
-          }
-
-          if (horizontal) {
-            if (checkPositionsValidity(initialRow, initialCol) === true) {
-              for (let i = 0; i < boat.length; i++) {
-                let position = `grid-item-${+initialRow + i}_${initialCol}`;
-                try {
-                  // document.getElementById(position).style.backgroundColor ===
-                  //   "white";
-                  let endPosition = +initialRow + boat.length;
-                  if (endPosition <= 10) {
-                    document.getElementById(position).style.backgroundColor =
-                      "white";
-                    document.getElementById(position).style.color = "blue";
-                  }
-                } catch {
-                  return;
-                }
-              }
-            }
-          }
-        }
-        for (item of boats) {
-          if (item.className.split([" "])[1] === boat) {
-            item.style.color = "brown";
-          }
-        }
-        boat = "";
-        let counter = 0;
-        for (item of boats) {
-          try {
-            if (item.style.color === "brown") {
-              counter++;
-            }
-          } catch {
-            return;
-          }
-        }
-        if (counter === 1) {
-          // let boatPositions = "";
-          let squares = document.getElementsByClassName("gameSquare");
-
-          for (item of squares) {
-            let row = item.id[item.id.length - 3];
-            let col = item.id[item.id.length - 1];
-            if (item.style.backgroundColor === "white") {
-              boatPositions += row;
-              boatPositions += col;
-            }
-          }
-          // console.log(boatPositions)
-          console.log("game start");
-          const ws = new WebSocket("ws://127.0.0.1:3400");
-          ws.addEventListener("open", () => {
-            ws.send(JSON.stringify({ boatPositions: boatPositions }));
-          });
-        }
-      }
-
-      square.addEventListener("mouseover", handleMouseover);
-
-      square.addEventListener("click", () => {
-        // vertical = !vertical;
-        // horizontal = !horizontal;
-        handleMouseover();
-      });
-
-      square.addEventListener("contextmenu", handleRightClickedSquare, false);
-
+      square.addEventListener("click", handleClick);
       enemyGrid.append(square);
     }
   }
@@ -637,4 +444,3 @@ function createEnemyGrid(boatPositions) {
 
 //todo -- if colors are gray and the game hasn't begun yet, maybe allow for ships to be recalled. this could be accomplished by searching the grid for the matching id
 //todo -- work on websocket integration, player turns, etc.
-//todo -- use the enemyBoard string to determine hits

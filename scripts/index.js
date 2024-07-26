@@ -1,15 +1,24 @@
 const nameInputSection = document.getElementById("nameInputSection");
-let playerName = "";
 const id = Math.random();
-console.log(id);
-let boatPositions = {};
+let enemyPlayStatus = false;
+let playerOrder;
 let readyToPlay = false;
+let boat;
+let removeGameSquareFunctionality = false;
+let playerName = `playerID:${id}`;
+const boatObject = {
+  Carrier: "ccccc",
+  Battleship: "bbbb",
+  Cruiser: "rrr",
+  Submarine: "sss",
+  Destroyer: "dd",
+};
+let boatPositions = {};
+let enemyBoatPositions = {};
 let enemyCoordinates = [];
 const sunkBoats = [];
+
 const ws = new WebSocket("ws://127.0.0.1:3400");
-
-let removeGameSquareFunctionality = false;
-
 ws.addEventListener("open", () => {
   console.log("socket open");
 });
@@ -23,27 +32,52 @@ ws.addEventListener("message", (message) => {
   if (message.data === "Welcome new client") {
     return;
   }
-
   if (JSON.parse(message.data).id === id) {
-    // return;
-    console.log(id);
-  } else if (JSON.parse(message.data).boatPositions) {
-    // console.log("boatPositions:",boatPositions)
-    // console.log(JSON.parse(message.data));
+    // console.log(id);
+    return;
+  } else if (JSON.parse(message.data).playerOrder) {
+    playerOrder = JSON.parse(message.data).playerOrder;
+    if (playerOrder === true) {
+          document.getElementById(
+      `playerTurn`
+    ).textContent = `${playerName}, take your turn`;
+    } else if (playerOrder === false) {
+      document.getElementById(
+        `playerTurn`
+      ).textContent = `${JSON.parse(message.data).enemyName}, has a turn`;
+    }
 
-    createEnemyGrid(JSON.parse(message.data).boatPositions);
+  } else if (JSON.parse(message.data).boatPositions) {
+    enemyBoatPositions = JSON.parse(message.data).boatPositions;
+    createEnemyGrid(enemyBoatPositions);
+    enemyCoordinates = JSON.parse(message.data).boatPositions;
+  } else if (JSON.parse(message.data).playStatus) {
+    enemyPlayStatus = JSON.parse(message.data).playStatus;
+  } else if (JSON.parse(message.data).hit) {
+    const hit = JSON.parse(message.data).hit;
+    // console.log(`hit:`,hit)
+    document.getElementById(
+      `grid-item-${hit[hit.length - 3]}_${hit[hit.length - 1]}`
+    ).style.backgroundColor = `red`;
+    playerOrder = true;
+    ws.send(JSON.stringify({ playerOrder: !playerOrder, id: id , enemyName: playerName}));
+    // console.log(`playerOrder:`, playerOrder);
+  } else if (JSON.parse(message.data).playerOrder) {
+    playerOrder = JSON.parse(message.data).playerOrder;
+  } else if (JSON.parse(message.data).endGame) {
+    console.log(JSON.parse(message.data).sunkenBoat, "has sunk");
+    console.log(
+      "the game is ended,",
+      JSON.parse(message.data).endGame,
+      "has won!"
+    );
+  } else if (
+    JSON.parse(message.data).sunkenBoat &&
+    !JSON.parse(message.data).endGame
+  ) {
+    console.log(JSON.parse(message.data).sunkenBoat, "has sunk");
   }
 });
-
-const boatObject = {
-  Carrier: "ccccc",
-  Battleship: "bbbb",
-  Cruiser: "rrr",
-  Submarine: "sss",
-  Destroyer: "dd",
-};
-
-let boat;
 
 for (element of Object.keys(boatObject)) {
   let localboat = document.createElement("div");
@@ -125,6 +159,7 @@ function handleNameSubmitBtnClicked(e) {
   playerName = document.getElementById("name").value;
   nameInputSection.innerHTML = `<h2>Welcome, ${playerName}!</h2>
   <h3>Place your ships!</h3>`;
+  console.log("playerName:", playerName);
 }
 
 nameSubmitBtn?.addEventListener("click", handleNameSubmitBtnClicked);
@@ -138,10 +173,7 @@ function createGrid() {
   grid.style.gridTemplateColumns = "repeat(10,1fr)";
   grid.style.gridTemplateRows = "repeat(10,1fr)";
   grid.style.width = "32.5vw";
-  // grid.style.width = "20vw";
   grid.style.gap = ".25vw";
-  // grid.style.width = "20em";
-  // grid.style.gap = ".25em";
   grid.id = "playerGrid";
 
   gameBoard.appendChild(grid);
@@ -153,12 +185,9 @@ function createGrid() {
       square.style.color = "white";
       square.style.height = "3vw";
       square.style.width = "3vw";
-      // square.style.height = "2em";
-      // square.style.width = "2em";
       const identifier = `grid-item-${column}_${row}`;
       square.id = identifier;
       square.className = "gameSquare";
-      // square.textContent = ` ${column}-${row} `;
 
       function handleMouseover() {
         let initialRow = square.id[square.id.length - 3];
@@ -343,7 +372,6 @@ function createGrid() {
               }
             }
           }
-          // console.log("boatpositions:",boatPositions)
         }
 
         let counter = 0;
@@ -357,14 +385,21 @@ function createGrid() {
           }
         }
 
-        if (counter === 5) {
+        if (counter === 1) {
           removeGameSquareFunctionality = true;
           const boatData = { boatPositions: boatPositions, id: id };
           const ws = new WebSocket("ws://127.0.0.1:3400");
           ws.addEventListener("open", () => {
             ws.send(JSON.stringify(boatData));
+            ws.send(JSON.stringify({ playStatus: true, id: id }));
+            ws.close();
           });
           readyToPlay = true;
+          if (enemyPlayStatus === false) {
+            determinePlayerOrder();
+          } else if (enemyPlayStatus === true && readyToPlay === true) {
+            createEnemyGrid(enemyBoatPositions);
+          }
         }
         boat = "";
       }
@@ -386,17 +421,30 @@ function createGrid() {
 
 createGrid();
 
+function startGame() {
+  console.log("the game has begun");
+}
+
 function createEnemyGrid(boatPositions) {
-  // console.log("boatPositions", boatPositions);
+  if (!enemyPlayStatus || !readyToPlay) {
+    ws.addEventListener("message", (message) => {
+      if (
+        JSON.parse(message.data).playStatus &&
+        JSON.parse(message.data).id !== id
+      ) {
+        enemyPlayStatus = JSON.parse(message.data).playStatus;
+        createEnemyGrid(boatPositions);
+      }
+    });
+    return;
+  }
 
   const hr = document.createElement("div");
   hr.style.width = "80vw";
-  // hr.style.width = "80vw"
   hr.style.height = "1em";
   hr.style.color = "green";
   gameBoard.append(hr);
 
-  // console.log(boatPositions);
   const enemyGrid = document.createElement("div");
 
   enemyGrid.id = "enemyGrid";
@@ -404,9 +452,7 @@ function createEnemyGrid(boatPositions) {
   enemyGrid.style.gridTemplateColumns = "repeat(10,1fr)";
   enemyGrid.style.gridTemplateRows = "repeat(10,1fr)";
   enemyGrid.style.width = "32.5vw";
-  // enemyGrid.style.width = "20em";
   enemyGrid.style.gap = ".25vw";
-  // enemyGrid.style.gap = ".25em";
 
   document.getElementById("enemyBoard").appendChild(enemyGrid);
 
@@ -422,59 +468,87 @@ function createEnemyGrid(boatPositions) {
       square.className = "enemyGameSquare";
 
       function handleClick() {
-        square.style.backgroundColor = "red";
-        const clickedColumn = square.id[square.id.length - 3];
-        const clickedRow = square.id[square.id.length - 1];
-        const location = clickedColumn + clickedRow;
+        if (playerOrder === true) {
+          playerOrder = false;
+          console.log(`playerOrder:`, playerOrder);
+          document.getElementById(`playerTurn`).textContent = ``;
+          square.style.backgroundColor = "red";
+          const ws = new WebSocket(`ws://127.0.0.1:3400`);
+          ws.addEventListener(`open`, () => {
+            ws.send(JSON.stringify({ hit: square.id, id: id }));
+            ws.close();
+          });
+          const clickedColumn = square.id[square.id.length - 3];
+          const clickedRow = square.id[square.id.length - 1];
+          const location = clickedColumn + clickedRow;
 
-        //! if the number of the iteration matches the length of the boatPositions object value, log a sink
+          //! if the number of the iteration matches the length of the boatPositions object value, log a sink
 
-        //! Check the incoming enemy boatPositions object (to array)
-        for (item of Object.keys(boatPositions)) {
-          for (let i = 0; i < boatPositions[item].length; i += 2) {
-            //! check is the coordinate pair from the boatPositions object
-            let check =
-              boatPositions[item][i].toString() +
-              boatPositions[item][i + 1].toString();
+          //! Check the incoming enemy boatPositions object (to array)
+          for (item of Object.keys(boatPositions)) {
+            for (let i = 0; i < boatPositions[item].length; i += 2) {
+              //! check is the coordinate pair from the boatPositions object
+              let check =
+                boatPositions[item][i].toString() +
+                boatPositions[item][i + 1].toString();
 
-            //! location is the spot clicked
-            //! if the location matches one of the coordinate pairs from the enemy boatPositions Object (if location === check)...
+              //! location is the spot clicked
+              //! if the location matches one of the coordinate pairs from the enemy boatPositions Object (if location === check)...
+              if (location === check) {
+                //! change the clicked location backgroundColor to orange
+                square.style.backgroundColor = "orange";
 
-            if (location === check) {
-              //! change the clicked location backgroundColor to orange
-              square.style.backgroundColor = "orange";
+                //! for each position of the boatPositions object...
+                let counter = 0;
+                let currentBoat = boatPositions[item];
+                const enemyGameSquare =
+                  document.getElementsByClassName("enemyGameSquare");
 
-              //! for each position of the boatPositions object...
-              let counter = 0;
-              let currentBoat = boatPositions[item];
-              // console.log(boatPositions)
-              // console.log(item)
-              const enemyGameSquare =
-                document.getElementsByClassName("enemyGameSquare");
-              //!iterate over the enemyGameSquare array
-              for (let sq = 0; sq < enemyGameSquare.length; sq++) {
-                if (enemyGameSquare[sq].style.backgroundColor === "orange") {
-                  for (let i = 0; i < currentBoat.length; i += 2) {
-                    let c = currentBoat[i].toString();
-                    let r = currentBoat[i + 1].toString();
-                    let check = c + r;
+                //!iterate over the enemyGameSquare array
+                for (let sq = 0; sq < enemyGameSquare.length; sq++) {
+                  if (enemyGameSquare[sq].style.backgroundColor === "orange") {
+                    for (let i = 0; i < currentBoat.length; i += 2) {
+                      let c = currentBoat[i].toString();
+                      let r = currentBoat[i + 1].toString();
+                      let check = c + r;
 
-                    let col =
-                      enemyGameSquare[sq].id[
-                        enemyGameSquare[sq].id.length - 3
-                      ].toString();
-                    let row =
-                      enemyGameSquare[sq].id[
-                        enemyGameSquare[sq].id.length - 1
-                      ].toString();
-                    let esCheck = col + row;
+                      let col =
+                        enemyGameSquare[sq].id[
+                          enemyGameSquare[sq].id.length - 3
+                        ].toString();
+                      let row =
+                        enemyGameSquare[sq].id[
+                          enemyGameSquare[sq].id.length - 1
+                        ].toString();
+                      let esCheck = col + row;
+                      if (check === esCheck) {
+                        counter++;
+                      }
 
-                    if (check === esCheck) {
-                      counter++;
-                    }
-                    if (counter === currentBoat.length / 2 && !sunkBoats.includes(item)) {
-                      console.log(item,"sunk");
-                      sunkBoats.push(item)
+                      const ws = new WebSocket("ws://127.0.0.1:3400");
+                      ws.addEventListener("open", () => {
+                        if (
+                          counter === currentBoat.length / 2 &&
+                          !sunkBoats.includes(item)
+                        ) {
+                          console.log(item, "sunk");
+                          sunkBoats.push(item);
+
+                          //todo if the length is 5, end the game
+                          if (sunkBoats.length === 2) {
+                            ws.send(
+                              JSON.stringify({
+                                sunkenBoat: item,
+                                endGame: playerName,
+                              })
+                            );
+                            //todo if not send the sunken boat, and end the turn
+                          } else {
+                            ws.send(JSON.stringify({ sunkenBoat: item }));
+                          }
+                        }
+                        ws.close();
+                      });
                     }
                   }
                 }
@@ -490,5 +564,27 @@ function createEnemyGrid(boatPositions) {
   }
 }
 
+function determinePlayerOrder() {
+  const ws = new WebSocket("ws://127.0.0.1:3400");
+  ws.addEventListener("open", () => {
+    const numb = Math.floor(Math.random(10) * 100);
+    if (numb % 2 === 0) {
+      playerOrder = true;
+      ws.send(JSON.stringify({ playerOrder: !playerOrder, id: id , enemyName: playerName}));
+    } else {
+      playerOrder = false;
+      const playerorderobject = JSON.stringify({
+        playerOrder: !playerOrder,
+        id: id,
+      });
+      ws.send(playerorderobject);
+    }
+    ws.close();
+  });
+}
+
 //todo -- if colors are gray and the game hasn't begun yet, maybe allow for ships to be recalled. this could be accomplished by searching the grid for the matching id
 //todo -- work on websocket integration, player turns, etc.
+//todo -- work on correct player up displaying
+//todo -- rework graphic layout
+//todo -- add a notice of the game ending, ships sunk, etc to the layout

@@ -65,6 +65,7 @@ ws.addEventListener("message", (message) => {
   } else if (JSON.parse(message.data).playerOrder) {
     playerOrder = JSON.parse(message.data).playerOrder;
   } else if (JSON.parse(message.data).endGame) {
+    //todo -- change these console logs to on screen messages
     console.log(JSON.parse(message.data).sunkenBoat, "has sunk");
     console.log(
       "the game is ended,",
@@ -160,6 +161,7 @@ function handleNameSubmitBtnClicked(e) {
   nameInputSection.innerHTML = `<h2>Welcome, ${playerName}!</h2>
   <h3>Place your ships!</h3>`;
   console.log("playerName:", playerName);
+  document.getElementById(`gameContainer`).style.display = `flex`;
 }
 
 nameSubmitBtn?.addEventListener("click", handleNameSubmitBtnClicked);
@@ -168,12 +170,6 @@ const gameBoard = document.getElementById("gameBoard");
 
 function createGrid() {
   const grid = document.createElement("div");
-
-  grid.style.display = "grid";
-  grid.style.gridTemplateColumns = "repeat(10,1fr)";
-  grid.style.gridTemplateRows = "repeat(10,1fr)";
-  grid.style.width = "32.5vw";
-  grid.style.gap = ".25vw";
   grid.id = "playerGrid";
 
   gameBoard.appendChild(grid);
@@ -181,10 +177,6 @@ function createGrid() {
   for (let row = 0; row < 10; row++) {
     for (let column = 0; column < 10; column++) {
       let square = document.createElement("div");
-      square.style.backgroundColor = "black";
-      square.style.color = "white";
-      square.style.height = "3vw";
-      square.style.width = "3vw";
       const identifier = `grid-item-${column}_${row}`;
       square.id = identifier;
       square.className = "gameSquare";
@@ -356,7 +348,6 @@ function createGrid() {
                           position
                         ).style.backgroundColor = "white";
                         document.getElementById(position).style.color = "blue";
-                        // sendShipData(position);
                       }
                     } catch {
                       return;
@@ -368,6 +359,11 @@ function createGrid() {
                     }
                   }
                   boat = "";
+                }
+              }
+              for (square of document.getElementsByClassName("gameSquare")) {
+                if (square.style.backgroundColor === `green` || square.style.backgroundColor === `red`) {
+                  square.style.backgroundColor = `black`;
                 }
               }
             }
@@ -413,7 +409,7 @@ function createGrid() {
       });
 
       square.addEventListener("contextmenu", handleRightClickedSquare, false);
-
+      document.getElementById(`placeShip`).addEventListener(`click`, handleRightClickedSquare, false)
       grid.append(square);
     }
   }
@@ -439,30 +435,15 @@ function createEnemyGrid(boatPositions) {
     return;
   }
 
-  const hr = document.createElement("div");
-  hr.style.width = "80vw";
-  hr.style.height = "1em";
-  hr.style.color = "green";
-  gameBoard.append(hr);
-
   const enemyGrid = document.createElement("div");
 
   enemyGrid.id = "enemyGrid";
-  enemyGrid.style.display = "grid";
-  enemyGrid.style.gridTemplateColumns = "repeat(10,1fr)";
-  enemyGrid.style.gridTemplateRows = "repeat(10,1fr)";
-  enemyGrid.style.width = "32.5vw";
-  enemyGrid.style.gap = ".25vw";
 
   document.getElementById("enemyBoard").appendChild(enemyGrid);
 
   for (let row = 0; row < 10; row++) {
     for (let column = 0; column < 10; column++) {
       let square = document.createElement("div");
-      square.style.backgroundColor = "black";
-      square.style.color = "white";
-      square.style.height = "3vw";
-      square.style.width = "3vw";
       const identifier = `enemy-grid-item-${column}_${row}`;
       square.id = identifier;
       square.className = "enemyGameSquare";
@@ -559,6 +540,7 @@ function createEnemyGrid(boatPositions) {
       }
 
       square.addEventListener("click", handleClick);
+      square.addEventListener(`touchstart`, handleClick);
       enemyGrid.append(square);
     }
   }
@@ -584,7 +566,9 @@ function determinePlayerOrder() {
 }
 
 //todo -- if colors are gray and the game hasn't begun yet, maybe allow for ships to be recalled. this could be accomplished by searching the grid for the matching id
-//todo -- work on websocket integration, player turns, etc.
-//todo -- work on correct player up displaying
 //todo -- rework graphic layout
 //todo -- add a notice of the game ending, ships sunk, etc to the layout
+//todo -- fix player turn message
+//todo -- add logic to deal with more than two players (maybe lock out new players at a point?)
+//todo -- add a loop to keep trying to send gameplay information if the other player joins late?
+//todo -- continue working on touch integration solutions

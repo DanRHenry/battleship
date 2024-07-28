@@ -1,28 +1,86 @@
 body {
-    background-color: gray;
+  background-color: gray;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
 
-#gameBoard, #enemyBoard {
-    display: flex;
+#hero {
+  /* position: absolute; */
+  display: inline;
+  margin: auto;
+  max-height: 250px;
+  border-radius: 1em;
+}
+
+@media (orientation: portrait) {
+  #hero {
+    max-width: 80vw;
+    height: 100px;
+  }
+  body, #gameContainer {
     flex-direction: column;
-    text-align: center;
-    /* background-color: blue; */
-    min-height: clamp(300px, 32.5vw, 40vh);
-    width: clamp(300px, 32.5vw, 40vh);
+  }
+  .break {
+    height: 1em;
+  }
 }
 
-#enemyGrid, #playerGrid {
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* text-align: center; */
-    /* background-color: red; */
-    /* margin-left: 40vw; */
-    /* text-align: center; */
+@media (orientation: landscape) {
+  body {
+    background-color: purple;
+  }
+   #hero {
+    max-height: 30vh;
+   }
+   #gameContainer {
+    flex-direction: row;
+   }
+
+   #placeShip {
+    display: none;
+   }
+
+  .break {
+    height: 1em;
+  }
 }
 
+.break {
+  background-color: pink;
+}
+
+#gameContainer {
+  display: none;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  /* background-color: red; */
+}
+
+#gameBoard {
+  background-color: blue;
+}
+
+#enemyBoard {
+  background-color: red;
+}
+
+#enemyGrid,
+#playerGrid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: 0.25vw;
+}
+
+.enemyGameSquare,
 .gameSquare {
-    /* display: flex;
-    flex-direction: column;
-    text-align: center; */
-    user-select: none;
+  background-color: black;
+  color: white;
+  height: 30px;
+  width: 30px;
+  /* height: 3vw;
+  width: 3vw; */
+  user-select: none;
 }

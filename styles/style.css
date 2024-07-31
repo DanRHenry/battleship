@@ -6,17 +6,22 @@ body {
 }
 
 #hero {
-  /* position: absolute; */
   display: inline;
   margin: auto;
   max-height: 250px;
   border-radius: 1em;
 }
-
+#playerTurn {
+  font-size: x-large;
+}
 @media (orientation: portrait) {
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   #hero {
-    max-width: 80vw;
-    height: 100px;
+    height: 200px;
   }
   body, #gameContainer {
     flex-direction: column;
@@ -47,19 +52,64 @@ body {
 }
 
 .break {
-  background-color: pink;
+  /* background-color: pink; */
 }
 
 #gameContainer {
-  display: none;
+  /* display: none; */
   align-items: center;
   margin-left: auto;
   margin-right: auto;
-  /* background-color: red; */
 }
 
 #gameBoard {
   background-color: blue;
+}
+
+#gameBoardLayout, #enemyGameBoardLayout {
+  display: flex;
+  /* flex-direction: column; */
+  /* display: inline-block; */
+  /* display: grid;
+  grid-template-columns: auto; */
+  background-color: blue;
+}
+
+#lettersContainer, #enemyLettersContainer {
+  display: inline-block;
+  background-color: white;
+  width: 1.5em;
+}
+
+.letters {
+  padding-top: .25em;
+  padding-bottom: 0;
+  height: 24.2px;
+  border: solid, black, 0.15em;
+}
+
+#numbersContainer, #enemyNumbersContainer {
+  margin-left: 25px;
+  height: 24px;
+  /* padding-top: .25em; */
+  background-color: white;
+  display: flex;
+  width: 320px;
+  /* text-align: center; */
+}
+
+#enemyNumbersContainer {
+  /* display: none; */
+  visibility: hidden;
+}
+
+.numbers {
+  padding-top: 2px;
+  width: 2em;
+  border: solid, black, 0.15em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #enemyBoard {
@@ -71,7 +121,7 @@ body {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  gap: 0.25vw;
+  gap: 0.15em;
 }
 
 .enemyGameSquare,

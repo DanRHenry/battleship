@@ -1,29 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Title</title>
-    <link rel="stylesheet" href="./styles/style.css">
-</head>
-<body>
-  <h1>Battleship</h1>
-    <img id="hero" src="./media/ship.jpg" alt="ship">
-    <!-- <img id="hero" src="./media/aircraft_carrier.jpg" alt="aircraft_carrier"> -->
-    <div id="nameInputSection">
-    </div> 
-    <div id="playerTurn"></div>
+    <link rel="stylesheet" href="./styles/style.css" />
+  </head>
+  <body>
+    <h1>Battleship</h1>
+    <img id="hero" src="./media/ship.jpg" alt="ship" />
+    <div id="nameInputSection"></div>
     <div id="gameContainer">
-      <div id="enemyBoard">
+      <div id="enemyGameBoardLayout">
+      <div id="enemyLettersContainer"></div>
+      <div id="enemyBoard"></div>
+    </div>
+    <div id="enemyNumbersContainer"></div>
+
+      <div class="break"></div>
+      <div id="gameBoardLayout">
+        <div id="lettersContainer"></div>
+        <div id="gameBoard"></div>
       </div>
-      <div class="break"></div>
-      <div id="gameBoard"></div>
-      <button id="placeShip">Place Ship</button>
-      <div class="break"></div>
+      <div id="numbersContainer"></div>
+
+      <!-- <button id="placeShip">Place Ship</button> -->
+      <!-- <div class="break"></div> -->
       <div id="boats">
         <h2>Ships</h2>
         <div id="boatList"></div>
       </div>
       <script src="./scripts/index.js"></script>
-</body>
+    </div>
+  </body>
 </html>

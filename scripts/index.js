@@ -445,7 +445,7 @@ function createGrid() {
           }
         }
 
-        if (counter === 1) {
+        if (counter === 5) {
           removeGameSquareFunctionality = true;
           const boatData = { boatPositions: boatPositions, id: id };
           const ws = new WebSocket("ws://127.0.0.1:3400");

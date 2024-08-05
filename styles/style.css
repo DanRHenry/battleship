@@ -56,7 +56,7 @@ body {
 }
 
 #gameContainer {
-  /* display: none; */
+  display: none;
   align-items: center;
   margin-left: auto;
   margin-right: auto;
